@@ -1,0 +1,100 @@
+
+{% include "./base.html" %}
+{% include "./slider.html" %}
+
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+
+    <!-- Introduction section -->
+  
+    <section class="py-4 text-center container">
+
+        <div class="row py-lg-5">
+        
+            <div class="col-lg-6 col-md-8 mx-auto">
+                
+
+                <h4> Experience Innovation at Your Fingertips.... <h5>Shop Electronics Online with Brainstorm Solutions! </h5></h4>
+
+
+                <br>
+                
+
+                <strong><p class="lead text-muted">
+
+                Browse our extensive collection.
+
+                </p></strong>
+
+
+                <br>
+                {% if not user.is_authenticated %}
+        
+                <a href="{% url 'register' %}" class="btn btn-primary my-2"> <i class="fa fa-user-plus" aria-hidden="true"></i> &nbsp; Create an account </a>
+                {%endif%}
+                
+            </div>
+        
+        </div>
+
+    
+    </section>
+
+       <!-- All products section -->
+      
+       <div class="album py-5 bg-light">
+        
+        <div class="container">
+    
+          <div class="pb-3 h5"> All products </div>
+
+
+          <hr>
+
+          <br>
+          
+
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+    
+
+            {% for product in my_products %}
+            
+    
+                <div  class="col">
+                <div style=" height: 350px;" class="card shadow-sm">
+                    <img  class="img-fluid" alt="Responsive image" src="{{product.image.url}}">
+                    <div class="card-body">
+                    <p class="card-text">
+                        <a class="text-info text-decoration-none" href="{{product.get_absolute_url}}">{{ product.title | capfirst }}</a>
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5>Ksh {{ product.price|intcomma }} </h5>
+                    </div>
+                    </div>
+                </div>
+                
+                </div>
+    
+            {%endfor%}
+    
+          </div>
+
+
+        </div>
+
+
+      </div>
+
+
+
+{% endblock %}
+
+
+
+
+
+

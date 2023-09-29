@@ -1,0 +1,15 @@
+{% autoescape off %}
+
+Hello {{ user }}!
+Welcome to Brainstorm Login
+
+Thank you for registering on Brainstorm solutions Ecommerce. 
+
+We are glad to have you,
+Please confirm your email by clicking on the following link.
+
+http://{{domain}}{% url 'email-verification' uidb64=uid token=token %}
+If you did not make this request, please ignore it and delete this message.
+
+
+{% endautoescape %}
