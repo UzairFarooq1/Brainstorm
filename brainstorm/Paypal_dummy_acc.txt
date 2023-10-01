@@ -1,0 +1,13 @@
+Sandbox Paypal:
+Personal
+brainstorm@commerce.com
+Brainstorm@2580
+Balance = $100,000
+
+Business Account
+brainstorm@business.com
+Brainstorm@2580
+Balance = $100,000
+
+
+Client  ID : AZ0EMRpek7qp31YD-YnyPRIFZUVzEJHWuoeH38H86j-h5SDFJOAEA-nscpVwnWknk5GWrqLHZj8ZHBau
