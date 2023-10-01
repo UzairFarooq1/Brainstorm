@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'payment',
     'cart',#django app
     'account',
+    'storages',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
