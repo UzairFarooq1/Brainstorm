@@ -1,12 +1,10 @@
 Sandbox Paypal:
 Personal
 brainstorm@commerce.com
-Brainstorm@2580
 Balance = $100,000
 
 Business Account
 brainstorm@business.com
-Brainstorm@2580
 Balance = $100,000
 
 
