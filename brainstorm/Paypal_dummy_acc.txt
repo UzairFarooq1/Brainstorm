@@ -9,3 +9,7 @@ Balance = $100,000
 
 
 Client  ID : AZ0EMRpek7qp31YD-YnyPRIFZUVzEJHWuoeH38H86j-h5SDFJOAEA-nscpVwnWknk5GWrqLHZj8ZHBau
+
+
+Runnning ngrok custom
+ngrok http --domain=lucky-civet-jolly.ngrok-free.app 8000
