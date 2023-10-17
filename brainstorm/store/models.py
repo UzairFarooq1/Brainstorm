@@ -29,6 +29,8 @@ class Product(models.Model):
 
     description = models.TextField(blank=True)
 
+    quantity = models.PositiveIntegerField(default=0) 
+
     slug = models.SlugField(max_length=255)
 
     price = models.DecimalField(max_digits=8, decimal_places=2)

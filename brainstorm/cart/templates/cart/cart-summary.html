@@ -70,7 +70,7 @@
                         {{item.qty}}
                   
                     </option>
-                  
+                    {%if product.quantity > 4%}
                     <option value="">1</option>
                   
                     <option value="">2</option>
@@ -78,8 +78,12 @@
                     <option value="">3</option>
                   
                     <option value="">4</option>
+                  {%else%}
                   
+                  {%endif%}
                   </select>
+                  <p>Available Stock: {{ product.quantity }}</p>
+
                   
                   <br> <br>
 

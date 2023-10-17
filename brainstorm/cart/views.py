@@ -1,13 +1,24 @@
 from django.shortcuts import render
 
-from . cart import Cart 
-from store.models import Product
+from store.models import Category, Product
+
 from django.shortcuts import get_object_or_404
+from . cart import Cart 
 
 from django.http import JsonResponse
 
 # Create your views here.
 
+
+def product_info(request, product_slug):
+    product = get_object_or_404(Product, slug=product_slug)
+    
+    available_quantities = range(1, product.quantity + 1)
+
+
+    context = {'product' : product, 'available_quantities': available_quantities}
+
+    return render(request, 'cart/cart-summary.html', context)
 
 def cart_summary(request):
 
@@ -67,8 +78,3 @@ def cart_update(request):
         response = JsonResponse({'qty':cart_quantity, 'total':cart_total})
 
         return response
-
-
-
-
-

@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'cart',#django app
     'account',
     'storages',
-    'stats',
+    
 ]
 
 JAZZMIN_SETTINGS = {

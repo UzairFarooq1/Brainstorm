@@ -3,6 +3,8 @@ from django.shortcuts import render
 from . models import Category, Product
 
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+
 # Create your views here.
 
 def store(request):
@@ -28,7 +30,10 @@ def list_category(request, category_slug = None):
 
 def product_info(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
+    
+    available_quantities = range(1, product.quantity + 1)
 
-    context = {'product' : product}
+
+    context = {'product' : product, 'available_quantities': available_quantities}
 
     return render(request, 'store/product-info.html', context)
