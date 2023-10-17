@@ -16,10 +16,6 @@ summary(sales)
 
 sales <- sales[complete.cases(sales), ]
 
-
-
-
-
 sapply(sales, class)
 
 
@@ -61,15 +57,4 @@ plot(basket_rules[1:6], method="paracoord")
 
 itemFrequencyPlot(transaction, topN = 10)
 
-basket_rules2 <- apriori(transaction, parameter = list(minlen=3, sup = 0.001, conf = 0.1, target="rules"))
-
-print(length(basket_rules2))
-
-summary(basket_rules2)
-
-inspect(basket_rules2)
-
-plot(basket_rules2, method="graph")
-
-plot(basket_rules2, method="paracoord")
 
