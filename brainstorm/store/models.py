@@ -1,5 +1,11 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+
+
+
 
 # Create your models here.
 
@@ -47,4 +53,21 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('product-info', args=[self.slug])
     
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)  # You need to import Product
+    rating = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    ) # You might want to limit this to a certain range
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Review'
+
+    def __str__(self):
+        return f'Review by {self.user} for {self.product}'
     
+    def get_absolute_url(self):
+        return reverse('add_review', args=[self.slug])

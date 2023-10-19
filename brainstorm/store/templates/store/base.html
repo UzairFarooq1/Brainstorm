@@ -42,6 +42,42 @@
 
 	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
+      <style>
+        /* Style for the search container */
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        /* Style for the search input field */
+        .search-container input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        /* Style for the search button */
+        .search-container button {
+            padding: 10px 15px;
+            background: #007BFF; /* Change this to your desired button color */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Hover effect for the search button */
+        .search-container button:hover {
+            background: #0056b3; /* Change this to your desired hover color */
+        }
+
+      </style>
+
 
 
     </head>
@@ -113,6 +149,16 @@
             </ul>
 
         </div>
+
+        <!-- Add this code within your HTML template -->
+<div class="search-container">
+    <form action="{% url 'product-search' %}" method="GET">
+        <input type="text" name="q" placeholder="Search for products...">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+</div>
+
+        
 
 
         <div class="collapse navbar-collapse text-center" id="navbarNavDropdown">
