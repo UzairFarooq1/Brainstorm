@@ -268,15 +268,18 @@ def manage_shipping(request):
 
 @login_required(login_url='my-login')
 def track_orders(request):
-
     try:
-
         orders = OrderItem.objects.filter(user=request.user)
-
-        context = {'orders':orders}
-
+        context = {'orders': orders}
         return render(request, 'account/track-orders.html', context=context)
-
     except:
-
         return render(request, 'account/track-orders.html')
+
+
+def update_status(request, order_item_id):
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        order_item = OrderItem.objects.get(pk=order_item_id)
+        order_item.status = status
+        order_item.save()
+    return redirect('track_order')

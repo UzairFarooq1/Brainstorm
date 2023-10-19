@@ -75,27 +75,23 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-
-    # FK -> 
+    STATUS_CHOICES = (
+        ('pending', 'Order Pending'),
+        ('confirmed', 'Order Confirmed'),
+        ('out_for_delivery', 'Out for Delivery'),
+        ('delivered', 'Delivered'),
+    )
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
-
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-
-
     quantity = models.PositiveIntegerField(default=1)
-
-    price = models.DecimalField(max_digits=8, decimal_places=2)    
-
-
-    # FK
-
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
-
     def __str__(self):
-
         return 'Order Item - #' + str(self.id)
+
 
 
 

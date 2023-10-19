@@ -10,6 +10,53 @@
 
     <style>
 
+        /* CSS for Status Bar */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            height: 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+        }
+        
+        /* CSS for Status Indicators */
+        .status-indicator {
+            width: 25%;
+            height: 100%;
+            text-align: center;
+            line-height: 20px;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        /* Status Styles */
+        .status-pending {
+            background-color: #ffc107; /* Yellow */
+        }
+        
+        .status-confirmed {
+            background-color: #28a745; /* Green */
+        }
+        
+        .status-out-for-delivery {
+            background-color: #007bff; /* Blue */
+        }
+        
+        .status-delivered {
+            background-color: #17a2b8; /* Cyan */
+        }
+        
+        .status-bar {
+            width: 100%;
+            background-color: #ccc;
+        }
+        
+        .status-indicator {
+            height: 20px;
+            background-color: #4CAF50; /* Green color */
+        }
+        
+
 
         body{
 
@@ -25,49 +72,47 @@
 
     <br>
 
-    <div class="container bg-white shadow-md p-5 form-layout ">
-
-        <h3> <i class="fa fa-list-alt" aria-hidden="true"></i> &nbsp; My orders </h3>
-
-        <p> View all of your orders. </p>
-
+    <div class="container bg-white shadow-md p-5 form-layout">
+        <h3><i class="fa fa-list-alt" aria-hidden="true"></i> &nbsp; My orders</h3>
+        <p>View all of your orders.</p>
         <hr>
-
-
     </div>
-
+    
     <br>
-
-    <div class="container bg-white shadow-md p-5 form-layout ">
-
+    
+    <div class="container bg-white shadow-md p-5 form-layout">
         {% for order in orders %}
+            <strong><i class="fa fa-list-alt" aria-hidden="true"></i> &nbsp; Order ID # {{ order.id }}</strong>
+            <br><br>
+            {{ order.product }}
+            <br><br>
+            Quantity x {{ order.quantity }}
+            <br><br>
+            $ {{ order.price }}
+            <br><br>
+        
 
-            <strong> <i class="fa fa-list-alt" aria-hidden="true"></i> &nbsp;  Order ID # {{order.id}} </strong>
+    
+            <!-- Add a horizontal bar with different colors based on the order status -->
+            <div class="status-bar">
+                {% if order.status == 'pending' %}
+                <div class="status-indicator" style="width: 25%;">Pending order</div>
+                {% elif order.status == 'confirmed' %}
+                <div class="status-indicator" style="width: 50%;">Confirmed order</div>
+                {% elif order.status == 'out_for_delivery' %}
+                <div class="status-indicator" style="width: 75%;"> Out for delivery</div>
+                {% elif order.status == 'delivered' %}
+                <div class="status-indicator" style="width: 100%;">Delivered</div>
+                {% endif %}
+            </div>
             
-            <br> <br>
-
-            {{order.product}}
-
-            <br> <br>
-
-            Quantity x {{order.quantity}}
-
-            <br> <br>
-
-            $ {{order.price}}
-
-            <br> <br>
-
+            <br>
+    
             <hr>
-
-
         {% endfor %}
-        <p><strong>Your order is on its way to your address.  You will receive a call from the rider for address clarifications. 
-             Contact the admin at <a href="mailto:uzairf2580@gmail.com">uzairf2580@gmail.com</a> for any other inquiries. (Kindly attach your order ID with the email)</strong></p>
-
-
+        <p><strong>Contact the admin at <a href="mailto:uzairf2580@gmail.com">uzairf2580@gmail.com</a> for any inquiries. (Kindly attach your order ID as the subject of your email)</strong></p>
     </div>
-
+    
     <br>
 
 {% endblock %}

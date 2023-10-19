@@ -59,6 +59,8 @@ urlpatterns = [
     
     path('track-orders', views.track_orders, name='track-orders'),
 
+    path('update_status/<int:order_item_id>/', views.update_status, name='update_status'),
+
 
 
 
