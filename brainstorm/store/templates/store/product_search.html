@@ -3,6 +3,15 @@
 
 {% block content %}
 
+<style>
+.product-image {
+    transition: transform 0.3s; /* Add a smooth transition effect on the transform property */
+}
+
+.product-image:hover {
+    transform: scale(.7); /* Increase the scale (zoom in) on hover */
+}
+</style>
 <!-- Search results section -->
 
 <div class="album py-5 bg-light">
@@ -14,7 +23,7 @@
             {% for product in results %}
                 <div class="col">
                     <div style="height: 350px;" class="card shadow-sm">
-                        <img class="img-fluid" alt="Product Image" src="{{ product.image.url }}">
+                        <img class="img-fluid product-image" alt="Product Image" src="{{ product.image.url }}">
                         <div class="card-body">
                             <p class="card-text">
                                 <a class="text-info text-decoration-none" href="{{ product.get_absolute_url }}">{{ product.title|capfirst }}</a>

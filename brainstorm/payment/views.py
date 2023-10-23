@@ -48,14 +48,6 @@ def checkout(request):
     
 
 
-from django.shortcuts import render
-from .models import ShippingAddress, Order, OrderItem
-from cart.cart import Cart
-from store.models import Product  # Import Product model
-from django.http import JsonResponse
-from django.core.mail import send_mail
-from django.conf import settings
-
 def complete_order(request):
     if request.POST.get('action') == 'post':
         name = request.POST.get('name')
@@ -116,8 +108,9 @@ def complete_order(request):
             all_products = product_list
 
             # Email order
-            send_mail('Order Received', 'Hi!' + '\n\n' + 'Thank you for placing your order on Brainstorm Solutions Ecommerce' + '\n\n' +
-                      'Please find your order below' + '\n\n' + str(all_products) + '\n\n' + 'Total Paid: $' +
+            
+            send_mail('Order Placed', 'Hi!' + '\n\n' + 'Thank you for placing your order on Brainstorm Solutions Ecommerce' + '\n\n' +
+                      'Please find your order below' + '\n\n' + str(all_products) + 'Quantity: ' + str(quantity_ordered) +'\n\n' + 'Total Paid: $' +
                       str(cart.get_total()), settings.EMAIL_HOST_USER, [email], fail_silently=False)
         else:
             # Create order -> Guest users without an account
@@ -154,8 +147,8 @@ def complete_order(request):
             all_products = product_list
 
             # Email order
-            send_mail('Order Received', 'Hi!' + '\n\n' + 'Thank you for placing your order on Brainstorm Solutions Ecommerce' + '\n\n' +
-                      'Please find your order below' + '\n\n' + str(all_products) + '\n\n' + 'Total Paid: Ksh' +
+            send_mail('Order Placed', 'Hi!' + '\n\n' + 'Thank you for placing your order on Brainstorm Solutions Ecommerce' + '\n\n' +
+                      'Please find your order below' + '\n\n' + str(all_products) +'Quantity: ' + str(quantity_ordered) +'\n\n' + 'Total Paid: Ksh' +
                       str(cart.get_total()), settings.EMAIL_HOST_USER, [email], fail_silently=False)
 
         order_success = True

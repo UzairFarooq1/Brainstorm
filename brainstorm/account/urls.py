@@ -62,6 +62,10 @@ urlpatterns = [
     path('update_status/<int:order_item_id>/', views.update_status, name='update_status'),
 
 
+    path('generate-invoice-pdf/<int:order_id>/', views.generate_invoice_pdf, name='generate-invoice-pdf'),
+
+
+
 
 
 ]

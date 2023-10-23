@@ -2,7 +2,7 @@
 {% include "store/base.html" %}
 
 {% load static %}
-
+{% load mathfilters %}
 {% load crispy_forms_tags %}
 
 
@@ -74,7 +74,7 @@
 
     <div class="container bg-white shadow-md p-5 form-layout">
         <h3><i class="fa fa-list-alt" aria-hidden="true"></i> &nbsp; My orders</h3>
-        <p>View all of your orders.</p>
+        <p>Track all of your orders.</p>
         <hr>
     </div>
     
@@ -82,14 +82,22 @@
     
     <div class="container bg-white shadow-md p-5 form-layout">
         {% for order in orders %}
-            <strong><i class="fa fa-list-alt" aria-hidden="true"></i> &nbsp; Order ID # {{ order.id }}</strong>
+    <tr>
+        <td><strong><i class="fa fa-list-alt" aria-hidden="true"></i> &nbsp; Order ID # {{ order.id }}</strong></td>
             <br><br>
-            {{ order.product }}
+        <td>{{ order.product }}</td>
             <br><br>
-            Quantity x {{ order.quantity }}
+        <td>Quantity : {{ order.quantity }}</td>
             <br><br>
-            $ {{ order.price }}
-            <br><br>
+        <td>Total Amount: $ {{ order.price|mul:order.quantity }}{{ order.order_id }}</td>
+
+        <br><br>
+    </tr>
+
+
+            
+
+            
         
 
     
@@ -107,12 +115,15 @@
             </div>
             
             <br>
-    
+            <a href="{% url 'generate-invoice-pdf' order.id%}"  class="btn btn-primary">Download Invoice</a>
+            <br>
             <hr>
+            
         {% endfor %}
         <p><strong>Contact the admin at <a href="mailto:uzairf2580@gmail.com">uzairf2580@gmail.com</a> for any inquiries. (Kindly attach your order ID as the subject of your email)</strong></p>
     </div>
     
     <br>
+    
 
 {% endblock %}

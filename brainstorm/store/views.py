@@ -66,22 +66,23 @@ def list_category(request, category_slug = None):
 
     return render(request, 'store/list-category.html', {'category': category, 'products':products})
 
-from .forms import ReviewForm
 
 def product_info(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
     available_quantities = range(1, product.quantity + 1)
     
-    review_form = ReviewForm()  # Create an instance of the ReviewForm
-    
-    reviews = Review.objects.filter(product=product)  # Fetch reviews related to this product
+    review_form = ReviewForm()
+    reviews = Review.objects.filter(product=product)
+
+    # Get related products from the same category
+    related_products = Product.objects.filter(category=product.category).exclude(slug=product_slug)
 
     context = {
         'product': product,
         'available_quantities': available_quantities,
         'review_form': review_form,
-        'reviews': reviews,  # Pass reviews to the template
+        'reviews': reviews,
+        'related_products': related_products,  # Add related products to the context
     }
 
     return render(request, 'store/product-info.html', context)
-

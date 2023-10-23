@@ -4,6 +4,8 @@
 {% load static %}
 {% load humanize %}
 {% load mathfilters %}
+{%load custom_filters1 %}
+
 {% block content %}
 
 
@@ -64,24 +66,11 @@
                   &nbsp; 
                   
                   <select id="select{{product.id}}">
-                  
-                    <option selected>
-                  
-                        {{item.qty}}
-                  
-                    </option>
-                    {%if product.quantity > 4%}
-                    <option value="">1</option>
-                  
-                    <option value="">2</option>
-                  
-                    <option value="">3</option>
-                  
-                    <option value="">4</option>
-                  {%else%}
-                  
-                  {%endif%}
-                  </select>
+                    <option selected>{{ item.qty }}</option>
+                    {% for quantity in product.quantity|get_range %}
+                        <option value="{{ quantity }}">{{ quantity }}</option>
+                    {% endfor %}
+                </select>
                   <p>Available Stock: {{ product.quantity }}</p>
 
                   
