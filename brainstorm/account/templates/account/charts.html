@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stats</title>
+    <style>
+        #chart-container {
+            position: relative;
+        }
+        
+        #product-quantities-chart {
+            position: absolute;
+            top: 10px;  /* Adjust the top position as needed */
+            right: 10px;  /* Adjust the right position as needed */
+        }
+    </style>
+</head>
+<body>
+    <h3 style="margin-left: 200px;">Products Bought</h3>
+    <div id="chart-container" style="position: relative; width: 500px; height: 200px;">
+        <canvas id="productQuantitiesChart"></canvas>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <script>
+        // Get the product names and quantities from the view
+        var productNames = {{ product_names|safe }};
+        var quantities = {{ quantities|safe }};
+
+        var ctx = document.getElementById('productQuantitiesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: productNames,
+                datasets: [{
+                    label: 'Quantity',
+                    data: quantities,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+</body>
+</html>

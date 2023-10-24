@@ -63,6 +63,10 @@ urlpatterns = [
 
 
     path('generate-invoice-pdf/<int:order_id>/', views.generate_invoice_pdf, name='generate-invoice-pdf'),
+    
+    #path('user-orders-chart/<str:user>/', views.user_orders_chart, name='user_orders_chart'),
+
+    path('charts/', views.charts, name='charts'),
 
 
 

@@ -29,6 +29,15 @@ from reportlab.lib import styles
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 
+from django.db.models import Sum
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import base64
+from django.db.models import Count
+
+
 
 from django.contrib.auth.decorators import login_required
 
@@ -384,3 +393,44 @@ def generate_invoice_pdf(request, order_id):
     response.write(buffer.read())
 
     return response
+
+def user_orders_chart(request, user_name):
+  user = User.objects.get(name=user_name)
+
+  # Get the user's orders.
+  orders = Order.objects.filter(user=user)
+
+  # Group the orders by date and count the number of orders for each day.
+  order_count_by_date = orders.values('date_ordered').annotate(count=Count('User'))
+
+  context = {'order_count_by_date': order_count_by_date}
+
+  # Render the template with the order count by date.
+  return render(request, 'user_orders_chart.html', context )
+
+
+@login_required(login_url='my-login')
+def charts(request):
+    if request.user.is_authenticated:
+        # Filter OrderItem objects for the logged-in user
+        orders = OrderItem.objects.filter(user=request.user)
+
+        # Aggregate the quantity of each product for the filtered orders
+        product_quantities = orders.values('product__title').annotate(total_quantity=Sum('quantity'))
+
+        # Extract product names and quantities
+        product_names = [item['product__title'] for item in product_quantities]
+        quantities = [item['total_quantity'] for item in product_quantities]
+
+        context = {
+            'product_names': product_names,
+            'quantities': quantities,
+        }
+
+        return render(request, 'account/charts.html', context)
+    else:
+        # Handle the case where the user is not authenticated, e.g., display an error message or redirect
+        # to a login page.
+        # You can customize this part based on your application's requirements.
+        return render(request, 'account/charts.html')
+  
