@@ -1,32 +1,68 @@
+{% include "store/base.html" %}
+{% load static %}
+{% load mathfilters %}
+{% load crispy_forms_tags %}
+{% block content %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Stats</title>
     <style>
-        #chart-container {
-            position: relative;
+        .chart-box {
+            display: flex;
+            flex-wrap: wrap; /* Allow charts to wrap onto a new row */
         }
-        
-        #product-quantities-chart {
+
+        .chart-container {
+            width: 45%; /* Each chart takes up 50% of the box (two charts in one row) */
+            height: 400px;
+            position: relative;
+            margin-bottom: 20px;
+            margin-right: 20px; 
+            margin-left: 20px;/* Add some space between rows */
+        }
+
+        .chart {
             position: absolute;
-            top: 10px;  /* Adjust the top position as needed */
-            right: 10px;  /* Adjust the right position as needed */
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        /* Adjust individual chart styles as needed */
+        .product-chart {
+            background-color: #fff;
+        }
+
+        .order-status-chart {
+            background-color: #f2f2f2;
         }
     </style>
 </head>
 <body>
-    <h3 style="margin-left: 200px;">Products Bought</h3>
-    <div id="chart-container" style="position: relative; width: 500px; height: 200px;">
-        <canvas id="productQuantitiesChart"></canvas>
-    </div>
+    <h3 style="text-align: center;">Your Stats</h3>
+    <div class="chart-box">
+        <div class="chart-container product-chart">
+            <canvas id="productBoughtChart" class="chart"></canvas>
+        </div>
 
+        <div class="chart-container order-status-chart">
+            <canvas id="orderStatusChart" class="chart"></canvas>
+        </div>
+        
+        <!-- New row for the top-selling products chart -->
+        <div class="chart-container top-selling-products">
+            <canvas id="topSellingProductsChart" class="chart"></canvas>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     <script>
         // Get the product names and quantities from the view
         var productNames = {{ product_names|safe }};
         var quantities = {{ quantities|safe }};
-
-        var ctx = document.getElementById('productQuantitiesChart').getContext('2d');
+        
+        var ctx = document.getElementById('productBoughtChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
             data: {
@@ -40,6 +76,11 @@
                 }]
             },
             options: {
+                title: {
+                    display: true,
+                    text: 'Product Bought', // Set the title text here
+                    fontSize: 16 // Adjust the font size as needed
+                },
                 scales: {
                     yAxes: [{
                         ticks: {
@@ -49,6 +90,64 @@
                 }
             }
         });
-    </script>
+        
+</script>
+<script>
+    var orderStatusCanvas = document.getElementById('orderStatusChart').getContext('2d');
+    new Chart(orderStatusCanvas, {
+        type: 'pie',
+        data: {
+            labels: ['Pending', 'Confirmed', 'Out for Delivery', 'Delivered'],
+            datasets: [{
+                data: {{ order_status_data|safe }},  // Replace with the data from your view
+                backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(75, 192, 192, 0.6)', 'rgba(255, 206, 86, 0.6)', 'rgba(54, 162, 235, 0.6)'],
+                borderColor: ['rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)', 'rgba(255, 206, 86, 1)', 'rgba(54, 162, 235, 1)'],
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Order Status',
+                fontSize: 16
+            }
+        }
+    });
+
+    
+</script>
+<script>
+    var productNames = {{ productnames|safe }};
+    var quantities = {{ productquantities|safe }};
+
+    var ctx = document.getElementById('topSellingProductsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: productNames,
+            datasets: [{
+                label: 'Quantity Sold',
+                data: quantities,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Top Selling Products',
+                fontSize: 16
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
 </body>
 </html>
+{% endblock %}

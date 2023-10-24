@@ -412,6 +412,15 @@ def user_orders_chart(request, user_name):
 @login_required(login_url='my-login')
 def charts(request):
     if request.user.is_authenticated:
+
+        top_products = (
+        OrderItem.objects.values('product__title').annotate(total_quantity=Sum('quantity'))
+        .order_by('-total_quantity')[:10]  # Adjust the number as needed
+    )
+
+        productnames = [item['product__title'] for item in top_products]
+        productquantities = [item['total_quantity'] for item in top_products]
+
         # Filter OrderItem objects for the logged-in user
         orders = OrderItem.objects.filter(user=request.user)
 
@@ -421,10 +430,15 @@ def charts(request):
         # Extract product names and quantities
         product_names = [item['product__title'] for item in product_quantities]
         quantities = [item['total_quantity'] for item in product_quantities]
+        # Get the count of orders in different statuses
+        order_statuses = orders.values('status').annotate(status_count=Count('status'))
 
         context = {
             'product_names': product_names,
             'quantities': quantities,
+            'order_status_data': [item['status_count'] for item in order_statuses],
+            'productnames': productnames,
+            'productquantities': productquantities,
         }
 
         return render(request, 'account/charts.html', context)
