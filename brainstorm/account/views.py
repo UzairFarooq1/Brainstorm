@@ -394,21 +394,6 @@ def generate_invoice_pdf(request, order_id):
 
     return response
 
-def user_orders_chart(request, user_name):
-  user = User.objects.get(name=user_name)
-
-  # Get the user's orders.
-  orders = Order.objects.filter(user=user)
-
-  # Group the orders by date and count the number of orders for each day.
-  order_count_by_date = orders.values('date_ordered').annotate(count=Count('User'))
-
-  context = {'order_count_by_date': order_count_by_date}
-
-  # Render the template with the order count by date.
-  return render(request, 'user_orders_chart.html', context )
-
-
 @login_required(login_url='my-login')
 def charts(request):
     if request.user.is_authenticated:
