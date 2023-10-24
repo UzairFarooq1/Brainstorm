@@ -156,7 +156,7 @@
             {% for product in related_products %}
                 <div class="col">
                     <div style="height: 350px;" class="card shadow-sm">
-                        <img class="img-fluid product-image" alt="Responsive image" src="{{ product.image.url }}">
+                        <a href="{{ product.get_absolute_url }}"><img class="img-fluid product-image" alt="Responsive image" src="{{ product.image.url }}"></a>
                         <div class="card-body">
                             <p class="card-text">
                                 <a class="text-info text-decoration-none" href="{{ product.get_absolute_url }}">
@@ -189,6 +189,8 @@
             </div>
             <button type="submit" class="submit-button">Submit Review</button>
         </form>
+        {% else %}
+        <p>You must be logged in to leave a review. <a href="{% url 'my-login' %}">Log in</a></p>
         {%endif%}
 
         <h3>Product Reviews</h3>
