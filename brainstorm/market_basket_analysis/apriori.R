@@ -1,60 +1,18 @@
+# Load the required libraries
 library(arules)
 library(arulesViz)
-library(tidyverse)
-library(readr)
-library(ggplot2)
-library(knitr)
-library(magrittr)
-library(dplyr)
-library(plyr)
-library(tidyverse)
 
-sales <- read_csv("data/Updated_sales.csv")
-view(sales)
+# Load the dataset
+data <- read.csv("data/payment_orderitem.csv")
 
-summary(sales)
+# Convert the dataset into a transaction object
+transactions <- as(data, "transactions")
 
-sales <- sales[complete.cases(sales), ]
+# Mine frequent itemsets using Apriori algorithm
+frequent_itemsets <- apriori(transactions, parameter = list(support = 0.01, confidence = 0.5))
 
-sapply(sales, class)
+# Mine association rules from frequent itemsets
+association_rules <- as(frequent_itemsets, "rules")
 
-
-colnames(sales)[1] <- "Order_ID"
-colnames(sales)[3] <- "Quantity_Ordered"
-colnames(sales)[4] <- "Price_Each"
-colnames(sales)[5] <- "Order_Date"
-
-transactionData <- ddply(sales, c("Order_ID", "Order_Date"),
-                         function(df1) paste(df1$Product,
-                                             collapse = ","))
-
-transactionData$Order_ID <- NULL
-transactionData$Order_Date <- NULL
-colnames(transactionData) <- c("Product")
-
-write.csv(transactionData, "data/salesNew.csv", quote = FALSE, row.names = FALSE)
-
-transaction <- read.transactions("data/salesNew.csv", format = "basket", sep = ",")
-
-summary(transaction)
-
-basket_rules <- apriori(transaction, parameter = list(minlen=2, sup = 0.001, conf = 0.05, target="rules"))
-print(length(basket_rules))
-
-
-inspect(basket_rules[1:6])
-
-
-plot(basket_rules, jitter = 0)
-
-plot(basket_rules, method = "grouped", control = list(k = 5))
-
-plot(basket_rules[1:6], method="graph")
-
-plot(basket_rules[1:6], method="graph")
-
-plot(basket_rules[1:6], method="paracoord")
-
-itemFrequencyPlot(transaction, topN = 10)
-
-
+# Visualize the association rules
+plot(association_rules)
