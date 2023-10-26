@@ -1,0 +1,286 @@
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+
+<html>
+
+
+    <head>
+
+        <meta charset="utf-8"/>
+        <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+	  <title> Brainstorm Solutions </title>
+
+
+
+        <!-- CSS -->
+        
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+</head>
+<style>
+    .navbar {
+        background-color: #444; /* Grey background color */
+        color: #fff; /* White text color */
+        padding: 20px 0;
+        
+    }
+    
+    .navbar a {
+        color: #000000; /* Green link color */
+        text-decoration: none;
+        margin-right: 20px;
+    }
+    
+    .admin-panel-button {
+        background-color: #69e969; /* Green button color */
+        color: #fff; /* White text color */
+        padding: 10px 15px; /* Adjust padding to control button size */
+        text-decoration: none;
+        font-weight: bold;
+        margin-left:1100px ; /* Remove any default margin */
+    }
+
+    .admin-panel-button:hover {
+        background-color: #ffffff; /* Darker green on hover */
+    }
+
+    .chart-box {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* Center charts within the box */
+    }
+    
+    .chart-container {
+        width: 48%; /* Each chart takes up 48% of the box (two charts in one row) */
+        height: 300px; /* Adjust the height as needed */
+        position: relative;
+        margin: 10px; /* Add some margin between charts */
+    }
+    
+    .chart {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+    }
+    
+    /* Center the heading */
+    .dashboard-heading {
+        text-align: center;
+        color: #333; /* Dark grey text color */
+    }
+</style>
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="admin-panel-button"  href="{% url 'admin_dashboard' %}">Admin Panel</a>
+        
+    </nav>
+
+    <h1 style="text-align: center;" >Welcome to Admin Dashboard</h1>
+        
+    <div class="chart-box">
+        <div class="chart-container trend-chart">
+            <canvas id="salesTrendsChart" class="chart" width="400" height="200"></canvas>
+        </div>
+        
+        <div class="col-md-6">
+            <canvas id="orderStatusChart" width="400" height="300"></canvas>
+        </div>
+        </div>
+        <br><br><br>
+        <div class="chart-box">
+
+        <div class="col-md-6">
+            <canvas id="userDemographicsChart" width="400" height="400"></canvas>
+        </div>
+
+        <div class="col-md-6">
+        <canvas id="productRatingsChart" width="900" height="500"></canvas>
+        </div>
+        </div>
+
+        <br><br><br>
+        <div class="chart-box">
+        <div class="col-md-6">
+        <canvas id="aovTrendsChart" width="900" height="400"></canvas>
+        </div>
+
+
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+
+<script>
+    // Add your JavaScript code here to create the charts
+    var ctx = document.getElementById('salesTrendsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    label: 'Total Sales',
+                    data: {{ data|safe }},
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: false,
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Sales Trends Over Time', // Set the title text here
+                    fontSize: 16 // Adjust the font size as needed
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+</script>
+
+<script>
+    var orderStatusData = {
+        labels: [
+            {% for status in status_distribution %}
+            "{{ status.status }}",
+            {% endfor %}
+        ],
+        datasets: [{
+            data: [
+                {% for status in status_distribution %}
+                {{ status.order_count }},
+                {% endfor %}
+            ],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(54, 162, 235, 0.6)',
+                // Add more colors as needed
+            ],
+        }]
+    };
+
+    var ctx = document.getElementById('orderStatusChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie', // or 'doughnut' for a donut chart
+        data: orderStatusData,
+        options: {
+            title: {
+                display: true,
+                text: 'Order Status Distribution',
+                fontSize: 16
+            }
+        },
+        
+    });
+</script>
+
+<script>
+    var ctx = document.getElementById('userDemographicsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Staff', 'Non-Staff'],
+            datasets: [{
+                data: [{{ staff_count }}, {{ non_staff_count }}],
+                backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)'],
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'User Demographics',
+                fontSize: 16
+            }
+        }
+    });
+</script>
+<script>
+    var productData = {{ product_ratings|safe }};
+    var productLabels = productData.map(function (item) {
+        return item.product;
+    });
+    var productRatings = productData.map(function (item) {
+        return item.rating;
+    });
+    var ctx = document.getElementById('productRatingsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: productLabels,
+            datasets: [
+                {
+                    data: productRatings,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: true,
+                },
+            ],
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Product Ratings',
+                fontSize: 16,
+            },
+            scale: {
+                ticks: {
+                    min: 0,
+                    max: 5,
+                    stepSize: 1,
+                },
+            },
+        },
+    });
+</script>
+
+
+<script>
+    var ctx = document.getElementById('aovTrendsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'AOV',
+                data: {{ data|safe }},
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                fill: false,
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'AOV Trends Over Time',
+                fontSize: 16
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+{% endblock %}
+</html>
+

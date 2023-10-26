@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'mathfilters',
-
+     
     'crispy_forms',
 
     'store',#django app
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'cart',#django app
     'account',
     'storages',
+    'customDashboard',
     
 ]
 
@@ -75,7 +76,7 @@ JAZZMIN_SETTINGS = {
     # Links to put along the top menu
     "topmenu_links": [
         # Url that gets reversed (Permissions can be added)
-        {"name": "Brainstorm Solutions Limited", "url": "home", "permissions": ["auth.view_user"]},
+        {"name": "Brainstorm Solutions Dashboard", "url": "/admin", "permissions": ["auth.view_user"]},
         # model admin to link to (Permissions checked against model)
         {"model": "auth.User"},
     ],

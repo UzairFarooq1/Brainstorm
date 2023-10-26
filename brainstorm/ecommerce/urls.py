@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     #admin app
-    path('admin/', admin.site.urls),
+    path('admin/panel', admin.site.urls),
 
     path('admin_tools_stats/', include('admin_tools_stats.urls')),
     #store app
@@ -32,6 +32,10 @@ urlpatterns = [
     path('account/', include('account.urls')),
 
     path('payment/', include('payment.urls')),
+
+    path('admin/', include('customDashboard.urls')),
+
+
 
 ]
 

@@ -54,6 +54,54 @@
 
     
     </section>
+    <!-- Top products section -->
+      
+    <div class="album py-5 bg-light">
+        
+        <div class="container">
+    
+          <div class="pb-3 h5"> Top selling products </div>
+
+
+          <hr>
+
+          <br>
+          
+
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+    
+
+            {% for product_data in top_products_with_quantity %}
+            
+    
+                <div  class="col">
+                <div style=" height: 350px;" class="card shadow-sm">
+                    <a href="{{product_data.product.get_absolute_url}}"><img  class="img-fluid product-image" alt="Responsive image" src="{{product_data.product.image.url}}"></a>
+                    <div class="card-body">
+                    <p class="card-text">
+                        <a class="text-info text-decoration-none" href="{{product_data.product.get_absolute_url}}">{{ product_data.product.title | capfirst }}</a>
+                    </p>
+                    <p> Sold: {{ product_data.quantity }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5>$ {{ product_data.product.price|intcomma }} </h5>
+                        <br>
+                        
+                    </div>
+                    </div>
+                </div>
+                
+                </div>
+    
+            {%endfor%}
+    
+          </div>
+
+
+        </div>
+
+
+      </div>
+
 
        <!-- All products section -->
       
