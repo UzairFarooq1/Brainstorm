@@ -6,10 +6,12 @@ from django.db.models import Sum, Count
 from django.db.models.functions import TruncDay
 from django.db.models.functions import TruncMonth
 from payment.models import Order, OrderItem
-from store.models import Product, Review 
+from store.models import Product, Review , Category
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.db.models import Avg
+import json
+from django.db.models import F, ExpressionWrapper, FloatField
 
 
 
@@ -46,6 +48,42 @@ def admin_dashboard(request):
     avg_rating = Review.objects.filter(product=product).aggregate(avg_rating=Avg('rating'))['avg_rating']
     product_ratings.append({'product': product.title, 'rating': avg_rating})
 
+    #category sales
+    categories = Category.objects.all()
+    category_data = []
+
+    for category in categories:
+        total_sales = Product.objects.filter(category=category).aggregate(Sum('quantity'))['quantity__sum']
+        total_sales = float(total_sales) if total_sales is not None else 0.0  # Convert to float
+        category_data.append({
+            'name': category.name,
+            'total_sales': total_sales if total_sales else 0,
+        })
+
+
+    #product price vs revenue
+    product_data = (
+    OrderItem.objects
+    .values('product__title', 'product__price')
+    .annotate(total_revenue=Sum(F('product__price') * F('quantity')))
+    .order_by('product__title')
+)
+
+# Convert Decimal values to float
+    product_data = [
+    {
+        'product_name': item['product__title'],
+        'product_price': float(item['product__price']),
+        'total_revenue': float(item['total_revenue'])
+    }
+    for item in product_data
+]
+
+    product_data_json = json.dumps(list(product_data))
+
+
+        
+
    
    context = {
         'labels': labels,
@@ -60,6 +98,10 @@ def admin_dashboard(request):
         'dataaov': dataaov,
 
         'product_ratings': product_ratings,
+
+        'category_data': category_data,
+
+        'product_data_json': product_data_json,
     }
    
    return render(request, 'customDashboard/admin_dashboard.html', context)

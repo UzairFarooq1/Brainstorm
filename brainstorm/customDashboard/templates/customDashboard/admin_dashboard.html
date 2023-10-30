@@ -1,6 +1,6 @@
 {% load static %}
 {% block content %}
-
+{% include "./custom_dashboard_base.html" %}
 <!DOCTYPE html>
 
 <html>
@@ -8,19 +8,9 @@
 
     <head>
 
-        <meta charset="utf-8"/>
-        <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
-
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
-	  <title> Brainstorm Solutions </title>
-
 
 
         <!-- CSS -->
-        
-
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
@@ -52,6 +42,17 @@
     .admin-panel-button:hover {
         background-color: #ffffff; /* Darker green on hover */
     }
+    .admin-logout-button {
+        background-color: #69e969; /* Green button color */
+        color: #fff; /* White text color */
+        padding: 10px 10px; /* Adjust padding to control button size */
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .admin-logout-button:hover {
+        background-color: #ffffff; /* Darker green on hover */
+    }
 
     .chart-box {
         display: flex;
@@ -79,12 +80,20 @@
         text-align: center;
         color: #333; /* Dark grey text color */
     }
+
+    .download-button {
+        background-color: rgb(252, 252, 252);
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        margin-left: 200px;
+    }
+    .download-button:hover {
+        background-color: rgb(48, 46, 46); /* Change the background color on hover */
+    }
 </style>
 <div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="admin-panel-button"  href="{% url 'admin_dashboard' %}">Admin Panel</a>
-        
-    </nav>
 
     <h1 style="text-align: center;" >Welcome to Admin Dashboard</h1>
         
@@ -97,7 +106,12 @@
             <canvas id="orderStatusChart" width="400" height="300"></canvas>
         </div>
         </div>
-        <br><br><br>
+        <br>
+        <button id="downloadSalesTrendsChart" class="download-button" onclick="downloadChart('salesTrendsChart', 'sales_trends_chart.png')">Download Chart</button>
+        <button style="margin-left: 600px;" id="downloadOrderStatusChart" class="download-button" onclick="downloadChart('orderStatusChart', 'order_Status_Chart.png')">Download Chart</button>
+
+        <br><br>
+
         <div class="chart-box">
 
         <div class="col-md-6">
@@ -109,17 +123,30 @@
         </div>
         </div>
 
+        <br>
+        <button id="downloaduserDemographicsChart" class="download-button" onclick="downloadChart('userDemographicsChart', 'user_Demographics_Chart.png')">Download Chart</button>
+        <button style="margin-left: 450px;" id="downloadproductRatingsChart" class="download-button" onclick="downloadChart('productRatingsChart', 'product_Ratings_Chart.png')">Download Chart</button>
         <br><br><br>
         <div class="chart-box">
+
         <div class="col-md-6">
-        <canvas id="aovTrendsChart" width="900" height="400"></canvas>
+        <canvas id="categorySalesChart" width="400" height="400"></canvas>
         </div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-
+        <div class="col-md-6">
+        <canvas id="revenueByProductChart" width="500" height="400"></canvas>
+        </div>
+        </div>
     </div>
-</div>
+    <br>        
+    <button style="margin-left: 350px;" id="downloadcategorySalesChart" class="download-button" onclick="downloadChart('categorySalesChart', 'category_Sales_Chart.png')">Download Chart</button>
+    <button style="margin-left: 380px;" id="downloadrevenueByProductChart" class="download-button" onclick="downloadChart('revenueByProductChart', 'revenue_By_Product_Chart.png')">Download Chart</button>
+    <br><br>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 
 <script>
     // Add your JavaScript code here to create the charts
@@ -170,7 +197,7 @@
                 'rgba(255, 99, 132, 0.6)',
                 'rgba(75, 192, 192, 0.6)',
                 'rgba(255, 206, 86, 0.6)',
-                'rgba(54, 162, 235, 0.6)',
+                'rgba(80, 162, 235, 0.6)',
                 // Add more colors as needed
             ],
         }]
@@ -252,35 +279,137 @@
 
 
 <script>
-    var ctx = document.getElementById('aovTrendsChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: {{ labels|safe }},
-            datasets: [{
-                label: 'AOV',
-                data: {{ data|safe }},
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-                fill: false,
-            }]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'AOV Trends Over Time',
-                fontSize: 16
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById('categorySalesChart').getContext('2d');
+        var categoryData = {{ category_data|safe }};
+        var categoryLabels = categoryData.map(function (category) {
+            return category.name;
+        });
+        var categorySales = categoryData.map(function (category) {
+            return category.total_sales;
+        });
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    label: 'Total Quantity Sold',
+                    data: categorySales,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
                 }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Products Sold per Category',
+                    fontSize: 16,
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
             }
-        }
+        });
     });
 </script>
+
+<script>
+    // Verify data format
+
+    var productData = {{ product_data_json|safe }};
+
+    var productNames = productData.map(function(item) {
+        return item.product_name;
+    });
+
+    var productPrices = productData.map(function(item) {
+        return item.product_price;
+    });
+
+    var productRevenues = productData.map(function(item) {
+        return item.total_revenue;
+    });
+
+    var datasets = [];
+
+    // Define an array of custom colors for each product
+    var customColors = [
+        'rgba(75, 192, 192, 0.6)',
+        'rgba(255, 99, 132, 0.6)',
+        'rgba(255, 206, 86, 0.6)',
+        'rgba(150, 162, 235, 0.6)',
+        // Add more custom colors as needed
+    ];
+
+    // Create a dataset for each product with a custom color
+    for (var i = 0; i < productData.length; i++) {
+        datasets.push({
+            label: productNames[i],
+            data: [{ x: productPrices[i], y: productRevenues[i] }],
+            backgroundColor: customColors[i], // Use the custom color
+            borderColor: customColors[i],
+            pointRadius: 5,
+            pointHoverRadius: 8,
+        });
+    }
+
+    // Verify scatterData
+
+    var ctx = document.getElementById('revenueByProductChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: datasets,
+        },
+        options: {
+            legend: {
+                display: true,
+                position: 'top', // Adjust the legend position as needed
+            },
+            scales: {
+                xAxes: [{
+                    type: 'linear',
+                    position: 'bottom',
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Product Price',
+                    },
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Total Revenue',
+                    },
+                }],
+            },
+            title: {
+                display: true,
+                text: 'Revenue by Product',
+                fontSize: 16,
+            },
+        },
+    });
+</script>
+
+
+<script>
+    function downloadChart(chartId, fileName) {
+        var chartCanvas = document.getElementById(chartId);
+        var chartImage = chartCanvas.toDataURL('image/png');
+        var downloadLink = document.createElement('a');
+        downloadLink.href = chartImage;
+        downloadLink.download = fileName;
+        downloadLink.click();
+    }
+</script>
+
+
 {% endblock %}
 </html>
 

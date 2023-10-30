@@ -66,7 +66,7 @@ JAZZMIN_SETTINGS = {
     "site_icon": "images/favicon.ico",
     # Add your own branding here
     "site_logo": "images/favicon.png",
-    "welcome_sign": "Welcome to the Admin Login",
+    "welcome_sign": "Welcome to the Admin Panel",
     # Copyright on the footer
     "copyright": "Brainstorm Solutions",
     "user_avatar": "images/favicon.png",
@@ -144,7 +144,7 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "slate",
+    "theme": "flatly",
     "dark_mode_theme": None,
     "button_classes": {
         "primary": "btn-primary",
