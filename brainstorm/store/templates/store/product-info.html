@@ -17,7 +17,7 @@
     }
 
     .product-image:hover {
-        transform: scale(.7); /* Increase the scale (zoom in) on hover */
+        transform: scale(1.2); /* Increase the scale (zoom in) on hover */
     }
 
     .review-form-container {
@@ -54,6 +54,37 @@
         overflow: hidden; /* or auto, scroll, etc. depending on your design */
         white-space: normal; /* or pre-line, pre-wrap, etc. to control line breaks */
     }
+
+    .product-card {
+        height: 400px; /* Set a fixed height for the cards */
+      }
+      
+      .product-card .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+      }
+      
+      .product-card img {
+        max-height: 100%; /* Adjust the image size as needed */
+        object-fit: contain; /* Preserve the aspect ratio of the image */
+      }
+      
+      .product-card .product-title {
+        font-size: 16px; /* Adjust the font size for the product title */
+        margin: 10px 0;
+        max-height: 3em; /* Set a max height for the product title */
+        overflow: hidden;
+        text-overflow: ellipsis;
+      
+      }
+      
+      .product-card .product-price {
+        font-size: 18px; /* Adjust the font size for the product price */
+      }
+
+      
 
 
 </style>
@@ -160,10 +191,10 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
             {% for product in related_products %}
                 <div class="col">
-                    <div style="height: 350px;" class="card shadow-sm">
+                    <div style="height: 350px;" class="card shadow-sm product-card slide-up">
                         <a href="{{ product.get_absolute_url }}"><img class="img-fluid product-image" alt="Responsive image" src="{{ product.image.url }}"></a>
                         <div class="card-body">
-                            <p class="card-text">
+                            <p class="card-text product-title">
                                 <a class="text-info text-decoration-none" href="{{ product.get_absolute_url }}">
                                     {{ product.title | capfirst }}
                                 </a>

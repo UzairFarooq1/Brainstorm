@@ -12,6 +12,7 @@
 
         <!-- CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
 
@@ -246,37 +247,39 @@
     var productRatings = productData.map(function (item) {
         return item.rating;
     });
+
     var ctx = document.getElementById('productRatingsChart').getContext('2d');
     new Chart(ctx, {
-        type: 'radar',
+        type: 'horizontalBar', // Use a horizontal bar chart
         data: {
             labels: productLabels,
             datasets: [
                 {
+                    label: 'Average Rating',
                     data: productRatings,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
                     borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    fill: true,
+                    borderWidth: 1,
                 },
             ],
         },
         options: {
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        max: 5,
+                    },
+                }],
+            },
             title: {
                 display: true,
-                text: 'Product Ratings',
+                text: 'Average Product Ratings',
                 fontSize: 16,
-            },
-            scale: {
-                ticks: {
-                    min: 0,
-                    max: 5,
-                    stepSize: 1,
-                },
             },
         },
     });
 </script>
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -294,7 +297,7 @@
             data: {
                 labels: categoryLabels,
                 datasets: [{
-                    label: 'Total Quantity Sold',
+                    label: 'Total Product Quantity',
                     data: categorySales,
                     backgroundColor: 'rgba(75, 192, 192, 0.6)',
                     borderColor: 'rgba(75, 192, 192, 1)',
@@ -304,7 +307,7 @@
             options: {
                 title: {
                     display: true,
-                    text: 'Products Sold per Category',
+                    text: 'Products per Category',
                     fontSize: 16,
                 },
                 scales: {

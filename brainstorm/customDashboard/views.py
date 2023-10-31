@@ -43,21 +43,25 @@ def admin_dashboard(request):
 
    #avg review
    products = Product.objects.all()
+   
    product_ratings = []
    for product in products:
     avg_rating = Review.objects.filter(product=product).aggregate(avg_rating=Avg('rating'))['avg_rating']
-    product_ratings.append({'product': product.title, 'rating': avg_rating})
+    if avg_rating is not None:
+       product_ratings.append({'product': product.title, 'rating': avg_rating})
+    else:
+       product_ratings.append({'product': product.title, 'rating': 0})
 
     #category sales
     categories = Category.objects.all()
     category_data = []
 
     for category in categories:
-        total_sales = Product.objects.filter(category=category).aggregate(Sum('quantity'))['quantity__sum']
-        total_sales = float(total_sales) if total_sales is not None else 0.0  # Convert to float
+        total_qty = Product.objects.filter(category=category).aggregate(Sum('quantity'))['quantity__sum']
+        total_qty = float(total_qty) if total_qty is not None else 0.0  # Convert to float
         category_data.append({
             'name': category.name,
-            'total_sales': total_sales if total_sales else 0,
+            'total_sales': total_qty if total_qty else 0,
         })
 
 

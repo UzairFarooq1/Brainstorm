@@ -85,7 +85,7 @@
     .slide-up {
         opacity: 0;
         transform: translateY(20px);
-        transition: transform 1s ease, opacity 1s ease;
+        transition: transform 0.5s ease, opacity 1s ease;
     }
 
     .slide-up.show {
@@ -196,7 +196,7 @@
                 {% endif %}
         
                 <span class="current">
-                    Page {{ my_products.number }} of {{ my_products.paginator.num_pages }}.
+                    Page {{ my_products.number }} of {{ my_products.paginator.num_pages }}
                 </span>
         
                 {% if my_products.has_next %}

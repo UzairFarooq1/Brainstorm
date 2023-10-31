@@ -11,7 +11,35 @@
 }
 
 .product-image:hover {
-    transform: scale(.7); /* Increase the scale (zoom in) on hover */
+    transform: scale(1.2); /* Increase the scale (zoom in) on hover */
+}
+.product-card {
+  height: 400px; /* Set a fixed height for the cards */
+}
+
+.product-card .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.product-card img {
+  max-height: 100%; /* Adjust the image size as needed */
+  object-fit: contain; /* Preserve the aspect ratio of the image */
+}
+
+.product-card .product-title {
+  font-size: 16px; /* Adjust the font size for the product title */
+  margin: 10px 0;
+  max-height: 3em; /* Set a max height for the product title */
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+
+.product-card .product-price {
+  font-size: 18px; /* Adjust the font size for the product price */
 }
 
 </style>
@@ -37,11 +65,12 @@
         {% for product in products%}
 
         <div class="col">
-          <div class="card shadow-sm">
+          <div class="card shadow-sm product-card">
+            <a href="{{product.get_absolute_url}}">
           <img class="img-fluid product-image" alt="Responsive image" src="{{product.image.url}}">
-
+          </a>
             <div class="card-body">
-              <p class="card-text">
+              <p class="card-text product-title" >
                 <a class="text-info text-decoration-none" href="{{product.get_absolute_url}}"> {{ product.title }} <!-- product title --> </a>
               </p>
               <div class="d-flex justify-content-between align-items-center">
