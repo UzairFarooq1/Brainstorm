@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import Sum
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 
 
@@ -50,21 +52,31 @@ def search(request):
 def store(request):
 
     all_products = Product.objects.all()
-    top_selling_products = (
-        OrderItem.objects.values('product__title')
-        .annotate(total_quantity=Sum('quantity'))
-        .order_by('-total_quantity') # Limit to the top 2 selling products
-    )
+# Number of products to display per page
+    per_page = 10
 
-    # Extract the titles of the top selling products
-    #top_product_titles = [item['product__title'] for item in top_selling_products]
-    top_selling_products = (
-        OrderItem.objects.values('product__title')
-        .annotate(total_quantity=Sum('quantity'))
-        .order_by('-total_quantity')  # Limit to the top 2 selling products
-    )
+    paginator = Paginator(all_products, per_page)
 
-    # Extract the titles and quantities of the top selling products
+    # Get the current page number from the URL parameter
+    page = request.GET.get('page')
+
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver the first page.
+        products = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g., 9999), deliver the last page of results.
+        products = paginator.page(paginator.num_pages)
+
+    top_selling_products = (
+        OrderItem.objects
+        .values('product__title')
+        .annotate(total_quantity=Sum('quantity'))
+        .order_by('-total_quantity')  # Order by total_quantity in descending order
+    )[:4] # Limit to the top 4 selling products
+
+    # Retrieve the corresponding product information from the Product model
     top_products_data = [
         {
             'title': item['product__title'],
@@ -73,24 +85,20 @@ def store(request):
         for item in top_selling_products
     ]
 
-    # Retrieve the corresponding product information from the Product model
-    top_products = Product.objects.filter(title__in=[item['title'] for item in top_products_data])
-
     # Combine product data with quantities
     top_products_with_quantity = [
         {
-            'product': product,
-            'quantity': next(item['quantity'] for item in top_products_data if item['title'] == product.title)
+            'product': Product.objects.get(title=item['title']),
+            'quantity': item['quantity'],
         }
-        for product in top_products
+        for item in top_products_data
     ]
-    
 
 
     # Retrieve the corresponding product information from the Product model
     #top_products = Product.objects.filter(title__in=top_product_titles)
 
-    context = {'my_products' : all_products, 'top_products_with_quantity': top_products_with_quantity} #'top_products' :top_products, 'top_product_quantity' : top_product_quantity}
+    context = {'my_products' : products, 'top_products_with_quantity': top_products_with_quantity} #'top_products' :top_products, 'top_product_quantity' : top_product_quantity}
     
     return render(request, 'store/store.html', context)
 

@@ -50,6 +50,10 @@
         border-radius: 5px;
         cursor: pointer;
     }
+    .description {
+        overflow: hidden; /* or auto, scroll, etc. depending on your design */
+        white-space: normal; /* or pre-line, pre-wrap, etc. to control line breaks */
+    }
 
 
 </style>
@@ -77,8 +81,9 @@
                 <br>
 
 
-                <p> {{product.description}} <!-- Product description --> </p>
-
+                <div class="description">
+                    <p style="word-wrap: break-word;">{{ product.description|safe }}</p>
+                </div>
                 <div class="border">
 
                     <div class="col border-bottom">

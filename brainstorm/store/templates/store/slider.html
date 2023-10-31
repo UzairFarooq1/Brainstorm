@@ -3,13 +3,13 @@
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img style="height: 550px;" class="d-block w-100" src="{% static 'media\images\slider1.jpeg' %}" alt="First slide">
+        <img style="height: 400px;" class="d-block w-100" src="{% static 'media\images\slider1.jpeg' %}" alt="First slide">
       </div>
       <div class="carousel-item">
-        <img style="height: 550px;" class="d-block w-100" src="{% static 'media\images\slider2.jpeg' %}" alt="Second slide">
+        <img style="height: 400px;" class="d-block w-100" src="{% static 'media\images\slider2new.jpg' %}" alt="Second slide">
       </div>
       <div class="carousel-item">
-        <img style="height: 550px;" class="d-block w-100" src="{% static 'media\images\slider3.png' %}" alt="Third slide">
+        <img style="height: 400px;" class="d-block w-100" src="{% static 'media\images\slider3new.jpg' %}" alt="Third slide">
       </div>
     </div>
      
@@ -22,3 +22,12 @@
       <span class="sr-only">Next</span>
     </a>
   </div>
+
+  <script>
+    $(document).ready(function () {
+        // Enable carousel auto slide every 5 seconds
+        $('#carouselExampleIndicators').carousel({
+            interval: 5000
+        });
+    });
+</script>

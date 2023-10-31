@@ -9,51 +9,94 @@
 {% block content %}
 
 {% block styles %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+
 <style>
     .product-image {
         transition: transform 0.3s; /* Add a smooth transition effect on the transform property */
     }
 
     .product-image:hover {
-        transform: scale(.7); /* Increase the scale (zoom in) on hover */
+        transform: scale(1.2); /* Increase the scale (zoom in) on hover */
+    }
+
+    .pagination {
+        text-align: center;
+    }
+
+    .pagination a {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 2px;
+        background-color: #007BFF;
+        color: #fff;
+        border: 1px solid #007BFF;
+        text-decoration: none;
+        border-radius: 3px;
+    }
+
+    .pagination a:hover {
+        background-color: #0056b3;
+        border: 1px solid #0056b3;
+    }
+
+    .current {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 2px;
+        background-color: #0056b3;
+        color: #fff;
+        border: 1px solid #0056b3;
+        text-decoration: none;
+        border-radius: 3px;
+    }
+
+    .product-card {
+        height: 400px; /* Set a fixed height for the cards */
+    }
+
+    .product-card .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    .product-card img {
+        max-height: 100%; /* Adjust the image size as needed */
+        object-fit: contain; /* Preserve the aspect ratio of the image */
+    }
+
+    .product-card .product-title {
+        font-size: 16px; /* Adjust the font size for the product title */
+        margin: 10px 0;
+        max-height: 3em; /* Set a max height for the product title */
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+    }
+
+    .product-card .product-price {
+        font-size: 18px; /* Adjust the font size for the product price */
+    }
+
+
+    .slide-up {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: transform 1s ease, opacity 1s ease;
+    }
+
+    .slide-up.show {
+        opacity: 1;
+        transform: translateY(0);
     }
 </style>
 {% endblock %}
 
     <!-- Introduction section -->
   
-    <section class="py-4 text-center container">
-
-        <div class="row py-lg-5">
-        
-            <div class="col-lg-6 col-md-8 mx-auto">
-                
-
-                <h4> Experience Innovation at Your Fingertips.... <h5>Shop Electronics Online with Brainstorm Solutions! </h5></h4>
-
-
-                <br>
-                
-
-                <strong><p class="lead text-muted">
-
-                Browse our extensive collection.
-
-                </p></strong>
-
-
-                <br>
-                {% if not user.is_authenticated %}
-        
-                <a href="{% url 'register' %}" class="btn btn-primary my-2"> <i class="fa fa-user-plus" aria-hidden="true"></i> &nbsp; Create an account </a>
-                {%endif%}
-                
-            </div>
-        
-        </div>
-
-    
-    </section>
     <!-- Top products section -->
       
     <div class="album py-5 bg-light">
@@ -72,26 +115,26 @@
     
 
             {% for product_data in top_products_with_quantity %}
-            
-    
-                <div  class="col">
-                <div style=" height: 350px;" class="card shadow-sm">
-                    <a href="{{product_data.product.get_absolute_url}}"><img  class="img-fluid product-image" alt="Responsive image" src="{{product_data.product.image.url}}"></a>
+
+            <div class="col">
+                <div class="card shadow-sm product-card slide-up">
+                    <!-- ... -->
                     <div class="card-body">
-                    <p class="card-text">
-                        <a class="text-info text-decoration-none" href="{{product_data.product.get_absolute_url}}">{{ product_data.product.title | capfirst }}</a>
-                    </p>
-                    <p> Sold: {{ product_data.quantity }}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5>$ {{ product_data.product.price|intcomma }} </h5>
-                        <br>
-                        
-                    </div>
+                        <a href="{{product_data.product.get_absolute_url}}">
+                            <img class="img-fluid product-image" alt="Responsive image" src="{{product_data.product.image.url}}">
+                        </a>
+                        <p class="card-text product-title">
+                            <a class="text-info text-decoration-none" href="{{product_data.product.get_absolute_url}}">
+                                {{ product_data.product.title | capfirst }}
+                            </a>
+                        </p> <p> Sold: {{ product_data.quantity }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="product-price">$ {{ product_data.product.price|intcomma }}</h5>
+                        </div>
                     </div>
                 </div>
+            </div>
                 
-                </div>
-    
             {%endfor%}
     
           </div>
@@ -123,30 +166,70 @@
             {% for product in my_products %}
             
     
-                <div  class="col">
-                <div style=" height: 350px;" class="card shadow-sm">
-                    <a href="{{product.get_absolute_url}}"><img  class="img-fluid product-image" alt="Responsive image" src="{{product.image.url}}"></a>
+            <div class="col">
+                <div class="card shadow-sm product-card slide-up">
+                    <!-- ... -->
                     <div class="card-body">
-                    <p class="card-text">
-                        <a class="text-info text-decoration-none" href="{{product.get_absolute_url}}">{{ product.title | capfirst }}</a>
-                    </p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5>$ {{ product.price|intcomma }} </h5>
-                    </div>
+                        <a href="{{product.get_absolute_url}}">
+                            <img class="img-fluid product-image" alt="Responsive image" src="{{product.image.url}}">
+                        </a>
+                        <p class="card-text product-title">
+                            <a class="text-info text-decoration-none" href="{{product.get_absolute_url}}">
+                                {{ product.title | capfirst }}
+                            </a>
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="product-price">$ {{ product.price|intcomma }}</h5>
+                        </div>
                     </div>
                 </div>
-                
-                </div>
+            </div>
     
             {%endfor%}
-    
           </div>
+          <br>
+          <div class="pagination">
+            <span class="step-links">
+                {% if my_products.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ my_products.previous_page_number }}">previous</a>
+                {% endif %}
+        
+                <span class="current">
+                    Page {{ my_products.number }} of {{ my_products.paginator.num_pages }}.
+                </span>
+        
+                {% if my_products.has_next %}
+                    <a href="?page={{ my_products.next_page_number }}">next</a>
+                    <a href="?page={{ my_products.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
 
 
         </div>
 
 
       </div>
+
+      <script>
+        $(document).ready(function () {
+            $('.slide-up').each(function () {
+                var element = this;
+                new Waypoint({
+                    element: element,
+                    handler: function (direction) {
+                        if (direction === 'down') {
+                            $(element).addClass('show');
+                            this.destroy(); // Remove the Waypoint to run the animation only once
+                        }
+                    },
+                    offset: '80%' // Adjust this offset as needed to control when the animation triggers
+                });
+            });
+        });
+    </script>
+    
 
 
 
