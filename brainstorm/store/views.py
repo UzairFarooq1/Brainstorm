@@ -6,8 +6,9 @@ from .forms import ReviewForm
 from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 from django.db.models import Q
-from django.db.models import Sum
+from django.db.models import Sum, Avg
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 
 
@@ -94,11 +95,23 @@ def store(request):
         for item in top_products_data
     ]
 
+    # Calculate the average rating for each product using the Review table
+    top_rated_products = []
+
+    for product in all_products:
+        avg_rating = Review.objects.filter(product=product).aggregate(avg_rating=Avg('rating'))['avg_rating']
+        num_reviews = Review.objects.filter(product=product).count()
+        if avg_rating is not None and avg_rating >= 4.0:
+            top_rated_products.append({
+                'product': product,
+                'num_reviews' : num_reviews,
+                'avg_rating': avg_rating,
+            })
 
     # Retrieve the corresponding product information from the Product model
     #top_products = Product.objects.filter(title__in=top_product_titles)
 
-    context = {'my_products' : products, 'top_products_with_quantity': top_products_with_quantity} #'top_products' :top_products, 'top_product_quantity' : top_product_quantity}
+    context = {'my_products' : products, 'top_products_with_quantity': top_products_with_quantity, 'top_rated_products': top_rated_products} #'top_products' :top_products, 'top_product_quantity' : top_product_quantity}
     
     return render(request, 'store/store.html', context)
 

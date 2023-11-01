@@ -5,12 +5,17 @@
 
 {% load static %}
 {% load humanize %}
+{% load custom_filters %}
+
 
 {% block content %}
 
 {% block styles %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
 
 <style>
     .product-image {
@@ -144,6 +149,45 @@
 
 
       </div>
+
+
+         <!-- Top rated section -->
+      
+         <div class="album py-5 bg-light">
+            <div class="container">
+                <div class="pb-3 h5"> Top rated products </div>
+                <hr>
+                <br>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+                    {% for product in top_rated_products %}
+                    <div class="col">
+                        <div class="card shadow-sm product-card slide-up">
+                            <div class="card-body">
+                                <a href="{{ product.product.get_absolute_url }}">
+                                    <img class="img-fluid product-image" alt="Responsive image" src="{{ product.product.image.url }}">
+                                </a>
+                                <p class="card-text product-title">
+                                    <a class="text-info text-decoration-none" href="{{ product.product.get_absolute_url }}">
+                                        {{ product.product.title | capfirst }}
+                                    </a>
+                                </p>
+                                <span class="star-rating">
+                                    {% for star in product.avg_rating|star_rating %}
+                                        <i class="{{ star }}"></i>
+                                    {% endfor %}
+                                    {{ product.avg_rating }} ({{product.num_reviews}})
+                                </span>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="product-price">$ {{ product.product.price|intcomma }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
 
 
        <!-- All products section -->
