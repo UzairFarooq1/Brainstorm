@@ -108,6 +108,52 @@
         
         <div class="container">
     
+          <div class="pb-3 h5"> Recommended products </div>
+
+
+          <hr>
+
+          <br>
+          
+
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+    
+
+            {% for product in recommended_products %}
+
+            <div class="col">
+                <div class="card shadow-sm product-card slide-up">
+                    <!-- ... -->
+                    <div class="card-body">
+                        <a href="{{product.get_absolute_url}}">
+                            <img class="img-fluid product-image" alt="Responsive image" src="{{product.image.url}}">
+                        </a>
+                        <p class="card-text product-title">
+                            <a class="text-info text-decoration-none" href="{{product.get_absolute_url}}">
+                                {{ product.title | capfirst }}
+                            </a>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="product-price">$ {{ product.price|intcomma }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+            {%endfor%}
+    
+          </div>
+
+
+        </div>
+
+
+      </div>
+    <!-- Top products section -->
+      
+    <div class="album py-5 bg-light">
+        
+        <div class="container">
+    
           <div class="pb-3 h5"> Top selling products </div>
 
 
@@ -175,7 +221,8 @@
                                     {% for star in product.avg_rating|star_rating %}
                                         <i class="{{ star }}"></i>
                                     {% endfor %}
-                                    {{ product.avg_rating }} ({{product.num_reviews}})
+                                    {{ product.avg_rating }} 
+                                    <p>Reviews: ({{product.num_reviews}})</p>
                                 </span>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="product-price">$ {{ product.product.price|intcomma }}</h5>

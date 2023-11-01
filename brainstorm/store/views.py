@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import Sum, Avg
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import random
 
 
 
@@ -108,10 +109,27 @@ def store(request):
                 'avg_rating': avg_rating,
             })
 
-    # Retrieve the corresponding product information from the Product model
-    #top_products = Product.objects.filter(title__in=top_product_titles)
+    if request.user.is_authenticated:
+     # Get the user's order history
+        user_orders = OrderItem.objects.filter(order__user=request.user)
 
-    context = {'my_products' : products, 'top_products_with_quantity': top_products_with_quantity, 'top_rated_products': top_rated_products} #'top_products' :top_products, 'top_product_quantity' : top_product_quantity}
+    # Extract product IDs from the user's order history
+        ordered_product_ids = [order.product.id for order in user_orders]
+
+    # Retrieve products from the same category as those previously ordered
+        recommended_products = Product.objects.exclude(id__in=ordered_product_ids).filter(
+            category__in=Product.objects.filter(id__in=ordered_product_ids).values('category'))[:5]
+    else:
+        # User is not authenticated, provide an alternative for anonymous users
+        all_products = Product.objects.all()
+        recommended_products = random.sample(list(all_products), min(5, len(all_products)))
+
+
+
+    context = {'my_products' : products, 
+               'top_products_with_quantity': top_products_with_quantity, 
+               'top_rated_products': top_rated_products,
+               'recommended_products': recommended_products} #'top_products' :top_products, 'top_product_quantity' : top_product_quantity}
     
     return render(request, 'store/store.html', context)
 

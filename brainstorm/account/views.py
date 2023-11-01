@@ -323,6 +323,9 @@ def generate_invoice_pdf(request, order_id):
     # Set up the content of the invoice
     p.drawString(100, 700, f"Invoice Number/Order ID: #{order_id}")
 
+    p.drawString(400, 700, "User:")
+
+
     # Draw the table headers
     p.setFont("Helvetica-Bold", 12)
     p.drawString(100, 650, "Product Description")
@@ -336,6 +339,7 @@ def generate_invoice_pdf(request, order_id):
 
 
     product = orderitems.product
+    user = orderitems.user
     price = orderitems.price  # Use the price from OrderItem
     quantity = orderitems.quantity
     status = orderitems.status
@@ -356,6 +360,7 @@ def generate_invoice_pdf(request, order_id):
     p.setFont("Helvetica", 12)
     p.drawString(300, y, f"${price:.2f}")
     p.drawString(380, y, str(quantity))
+    p.drawString(450, 700, str(user))
     p.drawString(430, y, f"${total:.2f}")
     p.drawString(500, y, str(status))
     
