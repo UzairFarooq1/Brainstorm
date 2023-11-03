@@ -289,7 +289,7 @@
             return category.name;
         });
         var categorySales = categoryData.map(function (category) {
-            return category.total_sales;
+            return category.total_products;
         });
 
         new Chart(ctx, {
@@ -297,7 +297,7 @@
             data: {
                 labels: categoryLabels,
                 datasets: [{
-                    label: 'Total Product Quantity',
+                    label: 'Number of Products',
                     data: categorySales,
                     backgroundColor: 'rgba(75, 192, 192, 0.6)',
                     borderColor: 'rgba(75, 192, 192, 1)',

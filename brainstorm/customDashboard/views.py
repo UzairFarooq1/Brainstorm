@@ -57,11 +57,10 @@ def admin_dashboard(request):
     category_data = []
 
     for category in categories:
-        total_qty = Product.objects.filter(category=category).aggregate(Sum('quantity'))['quantity__sum']
-        total_qty = float(total_qty) if total_qty is not None else 0.0  # Convert to float
+        total_products = Product.objects.filter(category=category).count()
         category_data.append({
             'name': category.name,
-            'total_sales': total_qty if total_qty else 0,
+            'total_products': total_products,
         })
 
 

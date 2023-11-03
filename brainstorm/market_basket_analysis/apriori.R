@@ -117,6 +117,7 @@ dim(sales)
 
 
 View(sales)
+
 print(sales)
 summary(sales)
 
@@ -167,30 +168,31 @@ transaction_data <-
 
 View(transaction_data)
 
+anyNA(transaction_data)
 
 ## Save the transactions in CSV format ----
 write.csv(transaction_data,
-          "data/transactions_single_format_sales.csv",
+          "data/transactions_basket_format.csv",
           quote = FALSE, row.names = FALSE)
 
 ## Read the transactions from the CSV file ----
-# We can now, finally, read the single format transaction data as a
+# We can now, finally, read the baskey format transaction data as a
 # transaction object.
+
 tr <-
-  read.transactions("data/transactions_single_format_sales.csv",
+  read.transactions("data/transactions_basket_format.csv",
                     format = "basket",
                     header = TRUE,
                     rm.duplicates = TRUE,
                     sep = ","
   )
 
-
 print(tr)
 summary(tr)
 
 # STEP 2. Basic EDA ----
-# Create an item frequency plot for the top 5 items
-itemFrequencyPlot(tr, topN = 7, type = "absolute",
+# Create an item frequency plot for the top  items 10
+itemFrequencyPlot(tr, topN = 10, type = "absolute",
                   col = brewer.pal(8, "Pastel2"),
                   main = "Absolute Item Frequency Plot",
                   horiz = TRUE,
@@ -201,18 +203,30 @@ itemFrequencyPlot(tr, topN = 7, type = "absolute",
 # generated.
 
 association_rules <- apriori(tr, 
-                             parameter = list(minlen=2, 
-                                              sup = 0.001, 
-                                              conf = 0.05, 
-                                              target="rules"))
+                             parameter = list(support = 0.001,
+                                              confidence = 0.2,
+                                              maxlen = 10))
+
 
 
 # STEP 3. Print the association rules ----
 
 summary(association_rules)
 inspect(association_rules)
+#confidence_threshold <- 0.2
 
-plot(association_rules)
+# Filter the association_rules to keep only the rules with confidence above the threshold
+#filtered_rules <- subset(association_rules, confidence > confidence_threshold)
+
+# Print summary and inspect the filtered rules
+#summary(filtered_rules)
+#inspect(filtered_rules)
+#plot(filtered_rules)
+
+#association_rules_new <- association_rules[!is.redundant(association_rules)]
+
+#inspect(association_rules_new)
+
 
 ### Remove redundant rules ----
 # We can remove the redundant rules as follows:
@@ -222,6 +236,7 @@ subset_rules <-
                           association_rules)) > 1)
 #getting the length
 num_rules <- length(subset_rules)
+length(subset_rules)
 
 # Create a sequence of indexes for rules to be removed (1st, 3rd, 5th, etc.) hence remaining with one of each
 indexes_to_remove <- seq(1, num_rules, by = 2)
@@ -232,6 +247,9 @@ association_rules_no_reps <- association_rules[-indexes_to_remove, ]
 # Print summary and inspect the non-redundant rules
 summary(association_rules_no_reps)
 inspect(association_rules_no_reps)
+plot(association_rules_no_reps)
+
+
 
 write(association_rules_no_reps,
       file = "rules/association_rules_based_on_product_name.csv")
@@ -256,15 +274,15 @@ inspect(head(iPhone_Google_Phone))
 # STEP 5. Visualize the rules ----
 # Filter rules with confidence greater than 0.85 or 85%
 rules_to_plot <-
-  association_rules_no_reps[quality(association_rules_no_reps)$confidence > 0.01] # nolint
+  association_rules_no_reps[quality(association_rules_no_reps)$confidence > 0.1] # nolint
 
 #Plot SubRules.
 plot(rules_to_plot)
 plot(rules_to_plot, method = "two-key plot")
 
-top_10_rules_to_plot <- head(rules_to_plot, n = 10, by = "confidence")
+top_rules_to_plot <- head(rules_to_plot, n =10, by = "confidence")
 install.packages("visNetwork")
-plot(top_10_rules_to_plot, method = "graph",  engine = "htmlwidget")
+plot(top_rules_to_plot, method = "graph",  engine = "htmlwidget")
 
 saveAsGraph(head(rules_to_plot, n = 1000, by = "lift"),
             file = "graph/association_rules.graphml")
