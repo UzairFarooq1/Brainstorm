@@ -284,11 +284,11 @@ View(association_rules_no_reps)
 rules <- as(association_rules_no_reps, "data.frame")
 
 # Save the rules to an Excel file
-write_xlsx(rules, "association_rules.xlsx")
+write_csv(rules, "association_rules.csv")
 
 # Save the data frame to an Excel file using the writexl package
 library(writexl)
-write_xlsx(rules_df, "association_rules.xlsx")
+write_xlsx(rules_df, "association_rules.csv")
 
 
 #Plot SubRules.
