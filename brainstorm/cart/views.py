@@ -21,8 +21,18 @@ def product_info(request, product_slug):
     return render(request, 'cart/cart-summary.html', context)
 
 def cart_summary(request):
+    cart = Cart(request)
+    related_products = []
 
-    return render(request, 'cart/cart-summary.html')
+    # Get the categories of products in the cart
+    categories = [item['product'].category for item in cart]
+
+    # Loop through the categories and fetch related products
+    for category in categories:
+        related_products.extend(Product.objects.filter(category=category).exclude(id__in=[item['product'].id for item in cart])[:2])
+    context = {'related_products': related_products}
+
+    return render(request, 'cart/cart-summary.html', context)
 
 def cart_add(request):
     

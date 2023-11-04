@@ -1,3 +1,4 @@
+
 {% include "store/base.html" %}
 
 
@@ -125,7 +126,37 @@
     <br>
 
     <br>
-  
+
+    <div class="container">
+      <h3>Related Products</h3>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+        {% for product in related_products %}
+          <div class="col">
+            <div class="card shadow-sm product-card slide-up">
+              <a href="{{ product.get_absolute_url }}">
+                <img class="img-fluid product-image" alt="Responsive image" src="{{ product.image.url }}">
+              </a>
+              <div class="card-body">
+                <p class="card-text product-title">
+                  <a class="text-info text-decoration-none" href="{{ product.get_absolute_url }}">
+                    {{ product.title | capfirst }}
+                  </a>
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <h5>$ {{ product.price|intcomma }}</h5>
+                </div>
+                <a href="{{ product.get_absolute_url }}" class="text-info text-reset">
+                  <button type="button" data-index="{{ product.id }}" class="btn btn-primary btn-sm add-to-cart-button">View Product</button>
+                  </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <br>
+    
+
 
  </main>
 

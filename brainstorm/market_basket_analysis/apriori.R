@@ -104,6 +104,8 @@ library(knitr)
 library(magrittr)
 library(dplyr)
 library(plyr)
+library(writexl)
+
 
 # STEP 2. Load and pre-process the dataset ----
 
@@ -116,7 +118,7 @@ dim(sales)
 
 
 
-View(sales)
+#View(sales)
 
 print(sales)
 summary(sales)
@@ -137,14 +139,14 @@ sales_removed_vars <-
   sales %>% dplyr::select(-Address,-Quantity_Ordered,-Price_Each)
 
 dim(sales_removed_vars)
-View(sales_removed_vars)
+#View(sales_removed_vars)
 
 # Also ensure that the product (name of the product purchased) is recorded
 # as categorical data
 sales_removed_vars %>% mutate(Product = as.factor(Product))
 sales_removed_vars$Date <- as.Date(sales_removed_vars$Order_Date, format="%m/%d/%Y")
 
-View(sales_removed_vars)
+#View(sales_removed_vars)
 
 str(sales_removed_vars)
 dim(sales_removed_vars)
@@ -159,14 +161,14 @@ transaction_data <-
               }
   )
 
-View(transaction_data)
+#View(transaction_data)
 
 #Only remain with products
 transaction_data <-
   transaction_data %>%
   dplyr::select("items" = V1)
 
-View(transaction_data)
+#View(transaction_data)
 
 anyNA(transaction_data)
 
@@ -204,8 +206,9 @@ itemFrequencyPlot(tr, topN = 10, type = "absolute",
 
 association_rules <- apriori(tr, 
                              parameter = list(support = 0.001,
-                                              confidence = 0.2,
+                                              confidence = 0.4,
                                               maxlen = 10))
+
 
 
 
@@ -276,12 +279,24 @@ inspect(head(iPhone_Google_Phone))
 rules_to_plot <-
   association_rules_no_reps[quality(association_rules_no_reps)$confidence > 0.1] # nolint
 
+View(association_rules_no_reps)
+
+rules <- as(association_rules_no_reps, "data.frame")
+
+# Save the rules to an Excel file
+write_xlsx(rules, "association_rules.xlsx")
+
+# Save the data frame to an Excel file using the writexl package
+library(writexl)
+write_xlsx(rules_df, "association_rules.xlsx")
+
+
 #Plot SubRules.
 plot(rules_to_plot)
 plot(rules_to_plot, method = "two-key plot")
 
-top_rules_to_plot <- head(rules_to_plot, n =10, by = "confidence")
-install.packages("visNetwork")
+top_rules_to_plot <- head(rules_to_plot, n =13, by = "confidence")
+#install.packages("visNetwork")
 plot(top_rules_to_plot, method = "graph",  engine = "htmlwidget")
 
 saveAsGraph(head(rules_to_plot, n = 1000, by = "lift"),
