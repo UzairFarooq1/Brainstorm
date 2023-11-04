@@ -4,8 +4,11 @@ from store.models import Category, Product
 
 from django.shortcuts import get_object_or_404
 from . cart import Cart 
-
+from django.core.exceptions import ObjectDoesNotExist  # Import ObjectDoesNotExist
 from django.http import JsonResponse
+from .models import Rule
+from django.db.models import Q
+
 
 # Create your views here.
 
@@ -23,17 +26,63 @@ def product_info(request, product_slug):
 def cart_summary(request):
     cart = Cart(request)
     related_products = []
+    product_names_in_cart = [item['product'].title for item in cart]
+
+    matching_product_details = []
+    matching_lhs_values = []
+    matching_rhs_values = []
+
+    for product_name in product_names_in_cart:
+        matching_rules = Rule.objects.filter(Q(lhs=product_name) | Q(rhs=product_name))
+
+        for rule in matching_rules:
+            if rule.lhs == product_name:
+                try:
+                    product = Product.objects.get(title=rule.rhs)
+                    matching_product_details.append(product)
+                    matching_lhs_values.append(product_name)
+                    matching_rhs_values.append(rule.rhs)
+                except ObjectDoesNotExist:
+                    # Handle the case where the product does not exist
+                    pass
+            elif rule.rhs == product_name:
+                try:
+                    product = Product.objects.get(title=rule.lhs)
+                    matching_product_details.append(product)
+                    matching_lhs_values.append(rule.lhs)
+                    matching_rhs_values.append(product_name)
+                except ObjectDoesNotExist:
+                    # Handle the case where the product does not exist
+                    pass
+
+    # Keep track of displayed categories and related products
+    displayed_categories = set()
 
     # Get the categories of products in the cart
     categories = [item['product'].category for item in cart]
 
     # Loop through the categories and fetch related products
     for category in categories:
-        related_products.extend(Product.objects.filter(category=category).exclude(id__in=[item['product'].id for item in cart])[:2])
-    context = {'related_products': related_products}
+        if category not in displayed_categories:
+            related_products_from_category = Product.objects.filter(category=category).exclude(id__in=[item['product'].id for item in cart])
+            displayed_products_count = 0
+            for product in related_products_from_category:
+                if displayed_products_count >= 2:
+                    break  # Limit to 2 related products per category
+                if product.category not in displayed_categories:
+                    displayed_categories.add(product.category)
+                related_products.append(product)
+                displayed_products_count += 1
+
+    context = {
+        'related_products': related_products,
+        'matching_product_details': matching_product_details,
+        'matching_lhs_values': matching_lhs_values,
+        'matching_rhs_values': matching_rhs_values,
+    }
+
 
     return render(request, 'cart/cart-summary.html', context)
-
 def cart_add(request):
     
     cart = Cart(request)

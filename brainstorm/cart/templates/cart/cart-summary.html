@@ -8,157 +8,139 @@
 {%load custom_filters1 %}
 
 {% block content %}
-
-
 <main class="pt-5">
-    
     <div class="container">
-      
-      <h1 class="h5"> Shopping cart </h1>
+        <h1 class="h5"> Shopping cart </h1>
+        <hr>
 
-	<hr>
-
-
-  {% for item in cart%}
-
-  {% with product=item.product %}
-      
-      <br>
-
-      <div class="row mb-4 border product-item">
-        
-        <div class="col-md-3 col-lg-2 order-md-first bg-light">
-        
-            <img class="img-fluid mx-auto d-block" width="200px" alt="Responsive image" src="{{product.image.url}}"> <!-- Product image -->
-        
-        </div>
-
-        
-        <div class="col-md-9 col-lg-10 ps-md-3 ps-lg-10">
-          
-          <a href="{{product.get_absolute_url}}" class="text-info text-reset"> <!-- Product get absolute url -->
-          
-            <h1 class="h5 pt-2"> {{product.title}} <!-- Product title --> </h1>
-          
-          </a>
-          
-          <div class="border">
-            
-            <div class="col border-bottom">
-              
-                <div class="row p-3">
-              
-                <div class="col-6"> Product </div>
-              
-                <div class="col-6 text-end"><span class="h6 fw-bold">$ {{product.price|mul:item.qty|intcomma}} <!-- Product price --> </span></div>
-            
-              </div>
-            
+        {% if cart|length > 0 %}
+        {% for item in cart %}
+        {% with product=item.product %}
+        <br>
+        <div class="row mb-4 border product-item">
+            <div class="col-md-3 col-lg-2 order-md-first bg-light">
+                <img class="img-fluid mx-auto d-block" width="200px" alt="Responsive image" src="{{product.image.url}}">
             </div>
-            
-            <div class="col">
-              
-              <div class="row p-3">
-                
-                <div class="col-12">
-                  
-                  <label for="select">Qty</label>
-
-                  &nbsp; 
-                  
-                  <select id="select{{product.id}}">
-                    <option selected>{{ item.qty }}</option>
-                    {% for quantity in product.quantity|get_range %}
-                        <option value="{{ quantity }}">{{ quantity }}</option>
-                    {% endfor %}
-                </select>
-                  <p>Available Stock: {{ product.quantity }}</p>
-
-                  
-                  <br> <br>
-
-                  <button type="button" data-index = "{{product.id}}"
-                    class="btn btn-primary btn-sm update-button">
-                    Update
-                  
-                  </button>
-                  
-                  &nbsp;
-
-                  <button type="button" data-index = "{{product.id}}"
-                    class="btn btn-danger btn-sm delete-button">
-                    Delete
-        
-                  </button>
-        
-
+            <div class="col-md-9 col-lg-10 ps-md-3 ps-lg-10">
+                <a href="{{product.get_absolute_url}}" class="text-info text-reset">
+                    <h1 class="h5 pt-2"> {{product.title}} </h1>
+                </a>
+                <div class="border">
+                    <div class="col border-bottom">
+                        <div class="row p-3">
+                            <div class="col-6"> Product </div>
+                            <div class="col-6 text-end"><span class="h6 fw-bold">$ {{product.price|mul:item.qty|intcomma}}</span></div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row p-3">
+                            <div class="col-12">
+                                <label for="select">Qty</label>
+                                &nbsp;
+                                <select id="select{{product.id}}">
+                                    <option selected>{{ item.qty }}</option>
+                                    {% for quantity in product.quantity|get_range %}
+                                    <option value="{{ quantity }}">{{ quantity }}</option>
+                                    {% endfor %}
+                                </select>
+                                <p>Available Stock: {{ product.quantity }}</p>
+                                <br> <br>
+                                <button type="button" data-index="{{product.id}}" class="btn btn-primary btn-sm update-button">
+                                    Update
+                                </button>
+                                &nbsp;
+                                <button type="button" data-index="{{product.id}}" class="btn btn-danger btn-sm delete-button">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-        
             </div>
-        
-            </div>
-    
-            </div>
-    
         </div>
-      
-    </div>
-     
-
-    {% endwith %}
-    {% endfor %}
-
-
-      <div class="col-12 text-end">
- 
-        <div class="h6 fw-bold"> total: $ <div id="total" class="d-inline-flex"> {{cart.get_total|intcomma}} <!-- cart.get_total --> </div></div>
-      <br>
-      {% if cart.get_total > 0 %}
-        <a href="{% url 'checkout' %}" class="btn btn-primary my-2">
-          <i class="fa fa-chevron-circle-right" aria-hidden="true"></i> &nbsp; Proceed to checkout
-        </a>
-      {% endif %}
-      </div>
- 
-
-    </div>
-
-    <br>
-
-    <br>
-
-    <div class="container">
-      <h3>Related Products</h3>
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
-        {% for product in related_products %}
-          <div class="col">
-            <div class="card shadow-sm product-card slide-up">
-              <a href="{{ product.get_absolute_url }}">
-                <img class="img-fluid product-image" alt="Responsive image" src="{{ product.image.url }}">
-              </a>
-              <div class="card-body">
-                <p class="card-text product-title">
-                  <a class="text-info text-decoration-none" href="{{ product.get_absolute_url }}">
-                    {{ product.title | capfirst }}
-                  </a>
-                </p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <h5>$ {{ product.price|intcomma }}</h5>
-                </div>
-                <a href="{{ product.get_absolute_url }}" class="text-info text-reset">
-                  <button type="button" data-index="{{ product.id }}" class="btn btn-primary btn-sm add-to-cart-button">View Product</button>
-                  </a>
-              </div>
-            </div>
-          </div>
+        {% endwith %}
         {% endfor %}
-      </div>
+
+        <div class="col-12 text-end">
+            <div class="h6 fw-bold"> total: $ <div id="total" class="d-inline-flex">{{cart.get_total|intcomma}}</div>
+            </div>
+            <br>
+            <a href="{% url 'checkout' %}" class="btn btn-primary my-2">
+                <i class="fa fa-chevron-circle-right" aria-hidden="true"></i> &nbsp; Proceed to checkout
+            </a>
+        </div>
+        </div>
+
+        <br>
+        <br>
+
+        <div class="container">
+            <h1 class="h5"> Frequently Bought Together </h1>
+            <hr>
+
+            {% if matching_product_details %}
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+                {% for product in matching_product_details %}
+                <div class="col">
+                    <div class="card shadow-sm product-card slide-up">
+                        <a href="{{ product.get_absolute_url }}">
+                            <img class="img-fluid product-image" alt="Responsive image" src="{{ product.image.url }}">
+                        </a>
+                        <div class="card-body">
+                            <p class="card-text product-title">
+                                <a class="text-info text-decoration-none" href="{{ product.get_absolute_url }}">
+                                    {{ product.title | capfirst }}
+                                </a>
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5>$ {{ product.price|intcomma }}</h5>
+                            </div>
+                            <a href="{{ product.get_absolute_url }}" class="text-info text-reset">
+                                <button type="button" data-index="{{ product.id }}" class="btn btn-primary btn-sm add-to-cart-button">View Product</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No matching products found.</p>
+            {% endif %}
+        </div>
+        <br>
+        <br>
+
+        <div class="container">
+            <h1 class="h5"> Related Products</h1>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+                {% for product in related_products %}
+                <div class="col">
+                    <div class="card shadow-sm product-card slide-up">
+                        <a href="{{ product.get_absolute_url }}">
+                            <img class="img-fluid product-image" alt="Responsive image" src="{{ product.image.url }}">
+                        </a>
+                        <div class="card-body">
+                            <p class="card-text product-title">
+                                <a class="text-info text-decoration-none" href="{{ product.get_absolute_url }}">
+                                    {{ product.title | capfirst }}
+                                </a>
+                            </p>
+                            <div class="d-flex justify-content_between align-items-center">
+                                <h5>$ {{ product.price|intcomma }}</h5>
+                            </div>
+                            <a href="{{ product.get_absolute_url }}" class="text-info text-reset">
+                                <button type="button" data-index="{{ product.id }}" class="btn btn-primary btn-sm add-to-cart-button">View Product</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <br>
     </div>
-    <br>
-    
-
-
- </main>
+    {% endif %}
+</main>
 
 <script>
 
