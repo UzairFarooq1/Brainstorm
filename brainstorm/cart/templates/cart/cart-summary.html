@@ -77,10 +77,13 @@
         <div class="container">
             <h1 class="h5"> Frequently Bought Together </h1>
             <hr>
-
-            {% if matching_product_details %}
+        
+            {% if frequently_bought_together %}
+            {% for product_name, matches in frequently_bought_together.items %}
+            <br>
+            <p class="text-info">Frequently bought together with {{ product_name }}:</p>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
-                {% for product in matching_product_details %}
+                {% for product in matches %}
                 <div class="col">
                     <div class="card shadow-sm product-card slide-up">
                         <a href="{{ product.get_absolute_url }}">
@@ -103,6 +106,7 @@
                 </div>
                 {% endfor %}
             </div>
+            {% endfor %}
             {% else %}
             <p>No matching products found.</p>
             {% endif %}

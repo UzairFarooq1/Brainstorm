@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.db.models import Sum, Avg
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import random
+from django.contrib import messages
 
 
 
@@ -22,6 +23,11 @@ def add_review(request, product_slug):
 
     if request.method == 'POST':
         if request.user.is_authenticated:
+            # Check if the user has already reviewed the product
+            if Review.objects.filter(product=product, user=request.user).exists():
+                messages.error(request, "You have already reviewed this product.")
+                return redirect('product-info', product_slug=product.slug)
+            
             form = ReviewForm(request.POST)
             if form.is_valid():
                 review = form.save(commit=False)
@@ -36,9 +42,12 @@ def add_review(request, product_slug):
     else:
         form = ReviewForm()
 
-    context = {'form': form, 'product': product}
+    context = {'form': form,
+            'product': product,
+            }
 
     return render(request, 'store/product-info.html', context)
+
 
 def search(request):
     query = request.GET.get('q')
@@ -156,10 +165,6 @@ def product_info(request, product_slug):
 
     # Get related products from the same category
     related_products = Product.objects.filter(category=product.category).exclude(slug=product_slug)
-
-    top_products = (
-        OrderItem.objects.values('product__title').annotate(total_quantity=Sum('quantity'))
-        .order_by('-total_quantity')[:10])
 
     context = {
         'product': product,

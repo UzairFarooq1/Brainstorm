@@ -26,35 +26,28 @@ def product_info(request, product_slug):
 def cart_summary(request):
     cart = Cart(request)
     related_products = []
-    product_names_in_cart = [item['product'].title for item in cart]
+    frequently_bought_together = {}  # Use a dictionary to store products and their matches
 
-    matching_product_details = []
-    matching_lhs_values = []
-    matching_rhs_values = []
+    for cart_item in cart:
+        product_name = cart_item['product'].title
 
-    for product_name in product_names_in_cart:
         matching_rules = Rule.objects.filter(Q(lhs=product_name) | Q(rhs=product_name))
+
+        frequently_bought_together[product_name] = []  # Initialize an empty list for each product
 
         for rule in matching_rules:
             if rule.lhs == product_name:
                 try:
                     product = Product.objects.get(title=rule.rhs)
-                    matching_product_details.append(product)
-                    matching_lhs_values.append(product_name)
-                    matching_rhs_values.append(rule.rhs)
+                    frequently_bought_together[product_name].append(product)
                 except ObjectDoesNotExist:
-                    # Handle the case where the product does not exist
                     pass
             elif rule.rhs == product_name:
                 try:
                     product = Product.objects.get(title=rule.lhs)
-                    matching_product_details.append(product)
-                    matching_lhs_values.append(rule.lhs)
-                    matching_rhs_values.append(product_name)
+                    frequently_bought_together[product_name].append(product)
                 except ObjectDoesNotExist:
-                    # Handle the case where the product does not exist
                     pass
-
     # Keep track of displayed categories and related products
     displayed_categories = set()
 
@@ -76,9 +69,7 @@ def cart_summary(request):
 
     context = {
         'related_products': related_products,
-        'matching_product_details': matching_product_details,
-        'matching_lhs_values': matching_lhs_values,
-        'matching_rhs_values': matching_rhs_values,
+        'frequently_bought_together': frequently_bought_together,
     }
 
 
