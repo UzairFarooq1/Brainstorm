@@ -145,8 +145,8 @@
             <canvas id="topSellingProductsChart" class="chart"></canvas>
         </div>
 
-        <div class="chart-container purchasing-trend">
-            <canvas id="purchasingTrendChart" class="chart"></canvas>
+        <div class="chart-container user-sales-trends-chart">
+            <canvas id="userSalesTrendsChart" class="chart"></canvas>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
@@ -241,48 +241,42 @@
         }
     });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 
 <script>
-        // Get the purchasing trend data from the view
-        var purchasingDates = {{ purchasing_dates|safe }};
-        var purchasingAmounts = {{ purchasing_amounts|safe }};
-    
-        var purchasingTrendCanvas = document.getElementById('purchasingTrendChart').getContext('2d');
-        new Chart(purchasingTrendCanvas, {
+    // Add your JavaScript code here to create the charts
+    var ctx = document.getElementById('userSalesTrendsChart').getContext('2d');
+        new Chart(ctx, {
             type: 'line',
             data: {
-                labels: purchasingDates,
+                labels: {{ labels|safe }},
                 datasets: [{
-                    label: 'Purchasing Trend',
-                    data: purchasingAmounts,
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1,
-                    fill: true
+                    label: 'Total Purchases',
+                    data: {{ data|safe }},
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: false,
                 }]
             },
             options: {
                 title: {
                     display: true,
-                    text: 'Purchasing Trend',
-                    fontSize: 16
+                    text: 'Purchase Trends Over Time', // Set the title text here
+                    fontSize: 16 // Adjust the font size as needed
                 },
                 scales: {
                     yAxes: [{
                         ticks: {
                             beginAtZero: true
                         }
-                    }],
-                    xAxes: [{
-                        type: 'time',
-                        time: {
-                            unit: 'day'  // Adjust the time unit as needed (day, month, year, etc.)
-                        }
                     }]
                 }
             }
         });
 </script>
+
 </body>
 </html>
 {% endblock %}

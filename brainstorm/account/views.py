@@ -31,7 +31,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 
 from django.db.models import Sum, Avg
-from django.db.models.functions import TruncDate
+from django.db.models.functions import TruncDay
 
 
 import pandas as pd
@@ -444,17 +444,13 @@ def charts(request):
         favorite_categories = [most_bought_category.name] if most_bought_category else []
 
 
-        order_dates_amounts = (
-            Order.objects
-            .filter(user=request.user)
-            .annotate(order_date=TruncDate('date_ordered'))
-            .values('order_date')
-            .annotate(total_amount=Sum('amount_paid'))
-            .order_by('order_date')
-        )
+        user_orders = Order.objects.filter(user=request.user)
 
-        purchasing_dates = [item['order_date'] for item in order_dates_amounts]
-        purchasing_amounts = [item['total_amount'] for item in order_dates_amounts]
+        user_daily_sales = user_orders.annotate(day=TruncDay('date_ordered')).values('day').annotate(total_sales=Sum('amount_paid')).order_by('day')
+        labels = [order['day'].strftime('%Y-%m-%d') for order in user_daily_sales]
+        data = [float(order['total_sales']) for order in user_daily_sales]
+
+
 
 
 
@@ -471,8 +467,9 @@ def charts(request):
             'total_amount_spent': total_amount_spent,
             'favorite_categories': favorite_categories,
 
-            'purchasing_dates': purchasing_dates,
-            'purchasing_amounts': purchasing_amounts,
+            'labels': labels,
+            'data': data,
+            
 
 
 
