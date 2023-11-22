@@ -9,7 +9,7 @@ from payment.models import Order, OrderItem
 from store.models import Product, Review , Category
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
-from django.db.models import Avg
+from django.db.models import Avg, Max
 import json
 from django.db.models import F, ExpressionWrapper, FloatField
 
@@ -84,7 +84,11 @@ def admin_dashboard(request):
 
     product_data_json = json.dumps(list(product_data))
 
-
+    total_sales = Order.objects.aggregate(total_sales=Sum('amount_paid'))['total_sales']
+    total_sales = round(total_sales, -2)
+    total_orders = Order.objects.count()
+    average_reviews = Review.objects.aggregate(avg_reviews=Avg('rating'))['avg_reviews']
+    total_users = User.objects.count()
         
 
    
@@ -105,6 +109,11 @@ def admin_dashboard(request):
         'category_data': category_data,
 
         'product_data_json': product_data_json,
+        'total_sales': total_sales,
+        'total_orders': total_orders,
+        'average_reviews': average_reviews,
+        'total_users': total_users,
+
     }
    
    return render(request, 'customDashboard/admin_dashboard.html', context)

@@ -6,6 +6,7 @@ from payment.forms import ShippingForm
 from payment.models import ShippingAddress
 
 from payment.models import Order, OrderItem
+from store.models import Review, Category
 
 
 from django.contrib.auth.models import User
@@ -29,7 +30,8 @@ from reportlab.lib import styles
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 
-from django.db.models import Sum
+from django.db.models import Sum, Avg
+from django.db.models.functions import TruncDate
 
 
 import pandas as pd
@@ -423,12 +425,57 @@ def charts(request):
         # Get the count of orders in different statuses
         order_statuses = orders.values('status').annotate(status_count=Count('status'))
 
+
+        total_orders = orders.count()
+
+        average_user_rating = Review.objects.filter(user=request.user).aggregate(avg_rating=Avg('rating'))['avg_rating']
+
+        total_amount_spent = Order.objects.filter(user=request.user).aggregate(total_amount=Sum('amount_paid'))['total_amount']
+
+        # Get the most bought category for the user
+        most_bought_category = (
+            Category.objects
+            .annotate(product_count=Count('product__orderitem__product', filter=Q(product__orderitem__user=request.user)))
+            .order_by('-product_count')
+            .first()
+        )
+
+        # Extract the name of the most bought category
+        favorite_categories = [most_bought_category.name] if most_bought_category else []
+
+
+        order_dates_amounts = (
+            Order.objects
+            .filter(user=request.user)
+            .annotate(order_date=TruncDate('date_ordered'))
+            .values('order_date')
+            .annotate(total_amount=Sum('amount_paid'))
+            .order_by('order_date')
+        )
+
+        purchasing_dates = [item['order_date'] for item in order_dates_amounts]
+        purchasing_amounts = [item['total_amount'] for item in order_dates_amounts]
+
+
+
         context = {
             'product_names': product_names,
             'quantities': quantities,
             'order_status_data': [item['status_count'] for item in order_statuses],
             'productnames': productnames,
             'productquantities': productquantities,
+
+
+            'total_orders': total_orders,
+            'average_user_rating': average_user_rating,
+            'total_amount_spent': total_amount_spent,
+            'favorite_categories': favorite_categories,
+
+            'purchasing_dates': purchasing_dates,
+            'purchasing_amounts': purchasing_amounts,
+
+
+
         }
 
         return render(request, 'account/charts.html', context)

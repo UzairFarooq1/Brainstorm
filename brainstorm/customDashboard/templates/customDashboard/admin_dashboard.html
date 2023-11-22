@@ -93,10 +93,89 @@
     .download-button:hover {
         background-color: rgb(48, 46, 46); /* Change the background color on hover */
     }
+
+    .card-box-container {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+
+    .card-box {
+        width: 200px; /* Adjust the width as needed */
+    }
+
+    .card {
+        background-color: #fff; /* Card background color */
+        border: 1px solid #ddd; /* Card border */
+        border-radius: 8px; /* Card border-radius */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Card box shadow */
+        margin-bottom: 20px;
+        transition: transform 0.3s ease-in-out; /* Smooth transition on hover */
+    }
+
+    .card:hover {
+        transform: scale(1.05); /* Scale up on hover */
+    }
+
+    .card-body {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .card-title {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #333; /* Card title color */
+    }
+
+    .card-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: #69e969; /* Card text color */
+    }
 </style>
+
 <div class="container">
 
     <h1 style="text-align: center;" >Welcome to Admin Dashboard</h1>
+
+    <div class="card-box-container">
+        <div class="card-box">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Sales</h5>
+                    <p class="card-text">${{ total_sales }}</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="card-box">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Orders</h5>
+                    <p class="card-text">{{ total_orders }}</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="card-box">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"> Average Reviews</h5>
+                    <p class="card-text">{{ average_reviews|floatformat:2 }}</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="card-box">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <p class="card-text">{{ total_users }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
         
     <div class="chart-box">
         <div class="chart-container trend-chart">

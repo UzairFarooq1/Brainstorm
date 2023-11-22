@@ -38,10 +38,99 @@
         .order-status-chart {
             background-color: #ffffff;
         }
+
+
+
+
+        .user-stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+    
+        .user-stats-box {
+            width: 200px; /* Adjust the width as needed */
+        }
+    
+        .card-user {
+            background-color: #fff; /* Card background color */
+            border: 1px solid #ddd; /* Card border */
+            border-radius: 8px; /* Card border-radius */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Card box shadow */
+            margin-bottom: 20px;
+            transition: transform 0.3s ease-in-out; /* Smooth transition on hover */
+        }
+    
+        .card-user:hover {
+            transform: scale(1.05); /* Scale up on hover */
+        }
+    
+        .card-body-user {
+            padding: 20px;
+            text-align: center;
+        }
+    
+        .card-title-user {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333; /* Card title color */
+        }
+    
+        .card-text-user {
+            font-size: 24px;
+            font-weight: bold;
+            color: #69e969; /* Card text color */
+        }
     </style>
 </head>
 <body>
     <h3 style="text-align: center;">Your Stats</h3>
+
+    <div class="user-stats-container">
+        <div class="user-stats-box">
+            <div class="card-user">
+                <div class="card-body-user">
+                    <h5 class="card-title-user">Total Orders</h5>
+                    <p class="card-text-user">{{ total_orders }}</p>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="user-stats-box">
+            <div class="card-user">
+                <div class="card-body-user">
+                    <h5 class="card-title-user">Average Ratings Given</h5>
+                    <p class="card-text-user">{{ average_user_rating|default:"N/A"|floatformat:2 }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-stats-box">
+            <div class="card-user">
+                <div class="card-body-user">
+                    <h5 class="card-title-user">Total Amount Spent</h5>
+                    <p class="card-text-user">{{ total_amount_spent|default:"N/A"|floatformat:2 }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-stats-box">
+            <div class="card-user">
+                <div class="card-body-user">
+                    <h5 class="card-title-user">Favorite Category</h5>
+                    <p class="card-text-user">
+                        {% if favorite_categories %}
+                            {{ favorite_categories.0 }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        </div>
+    
     <div class="chart-box">
         <div class="chart-container product-chart">
             <canvas id="productBoughtChart" class="chart"></canvas>
@@ -54,6 +143,10 @@
         <!-- New row for the top-selling products chart -->
         <div class="chart-container top-selling-products">
             <canvas id="topSellingProductsChart" class="chart"></canvas>
+        </div>
+
+        <div class="chart-container purchasing-trend">
+            <canvas id="purchasingTrendChart" class="chart"></canvas>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
@@ -148,6 +241,49 @@
         }
     });
 </script>
+
+<script>
+        // Get the purchasing trend data from the view
+        var purchasingDates = {{ purchasing_dates|safe }};
+        var purchasingAmounts = {{ purchasing_amounts|safe }};
+    
+        var purchasingTrendCanvas = document.getElementById('purchasingTrendChart').getContext('2d');
+        new Chart(purchasingTrendCanvas, {
+            type: 'line',
+            data: {
+                labels: purchasingDates,
+                datasets: [{
+                    label: 'Purchasing Trend',
+                    data: purchasingAmounts,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    fill: true
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Purchasing Trend',
+                    fontSize: 16
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            unit: 'day'  // Adjust the time unit as needed (day, month, year, etc.)
+                        }
+                    }]
+                }
+            }
+        });
+</script>
 </body>
 </html>
 {% endblock %}
+
