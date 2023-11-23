@@ -103,10 +103,11 @@
 
     .side-popup {
         position: fixed;
-        top: 300px;
+        top: 150px;
+        bottom: 250px;
         right: -300px; /* Initially hide the pop-up outside the viewport */
         width: 300px;
-        height: 40%;
+        height: 70%;
         background-color: #fff;
         box-shadow: -5px 0 5px rgba(0, 0, 0, 0.1);
         padding: 20px;
@@ -122,10 +123,37 @@
     }
     .btn-close-popup {
         position: absolute;
-        top: 10px;
+        top: 0px;
         right: 10px;
         font-size: 1.5em;
         color: #0c0c0c;
+    }
+
+    .side-popup img {
+        max-width: 100%; /* Ensure the image does not exceed the width of the pop-up */
+        height: 50%; /* Maintain the aspect ratio of the image */
+        margin-bottom: 10px; /* Add margin to separate image from text */
+    }
+    
+    /* Style for the text within the pop-up */
+    .side-popup p {
+        margin-bottom: 10px;
+         /* Add margin between paragraphs */
+    }
+
+    /* Add styles for the discounted price */
+    .product-price {
+        margin-top: 5px; /* Add margin between title and price */
+    }
+
+    .original-price {
+        text-decoration: line-through; /* Add strikethrough effect to the original price */
+        color: #999; /* Adjust color for original price */
+        margin-right: 5px; /* Add margin between original and discounted prices */
+    }
+
+    .discounted-price {
+        color: #e44d26; /* Adjust color for discounted price */
     }
 </style>
 {% endblock %}
@@ -334,18 +362,26 @@
       </div>
 
     <!-- Add this content inside the offer pop-up -->
-    <div id="ad-popup" class="side-popup">
-        <button class="btn btn-link btn-close-popup" aria-label="Close">&times;</button>
-        <!-- Content of the pop-up goes here -->
-        <h4>Special Offer!</h4>
-        <p>Check out our exclusive offer on:</p>
-        <a href="{{ random_product.get_absolute_url }}">
-            <img src="{{ random_product.image.url }}" alt="{{ random_product.title }}">
-            <p class="product-title">{{ random_product.title }}</p>
-            <p class="product-price">$ {{ random_product.price|intcomma }}</p>
-        </a>
-        <button class="btn btn-primary">Shop Now</button>
-    </div>
+<!-- Add this content inside the offer pop-up -->
+<div id="ad-popup" class="side-popup">
+    <button class="btn btn-link btn-close-popup" aria-label="Close">&times;</button>
+    <!-- Content of the pop-up goes here -->
+    <h5>Offer for you!</h5>
+    <h5 style="color: crimson;">15% OFF!</h5>
+    <p>Check out our exclusive offer on:</p>
+    <a href="{{ random_product.get_absolute_url }}">
+        <img src="{{ random_product.image.url }}" alt="{{ random_product.title }}">
+        <p class="product-title">{{ random_product.title }}</p>
+
+    </a>
+        <!-- Calculate the discounted price and apply styles -->
+        <p class="product-price">
+            <span class="original-price">${{ new_price|intcomma|floatformat:2 }}</span>
+            <span class="discounted-price">${{ random_product.price|intcomma }}</span>
+        </p>
+    
+    <a href="{{ random_product.get_absolute_url }}"><button class="btn btn-primary">Shop Now</button></a>
+</div>
 
     <!-- Add a button or element to trigger the pop-up -->
     <!-- <button id="show-popup-btn" class="btn btn-info">Show Offer</button>

@@ -136,7 +136,14 @@ def store(request):
     
     random_product = random.choice(all_products)
 
+        # Assuming your discount percentage is 15%
+    discount_percentage = 15
+    discount_factor = 1 + (discount_percentage / 100)
+    # Convert random_product.price to float before calculation
+    price_as_float = float(random_product.price)
 
+    # Calculate the discounted price
+    new_price = price_as_float * discount_factor
     
 
 
@@ -146,6 +153,8 @@ def store(request):
                'top_rated_products': top_rated_products,
                'recommended_products': recommended_products,
                 'random_product': random_product,
+                'new_price': new_price,
+
      }
     
     return render(request, 'store/store.html', context)
