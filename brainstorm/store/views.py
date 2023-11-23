@@ -133,12 +133,20 @@ def store(request):
         all_products = Product.objects.all()
         recommended_products = random.sample(list(all_products), min(5, len(all_products)))
 
+    
+    random_product = random.choice(all_products)
+
+
+    
+
 
 
     context = {'my_products' : products, 
                'top_products_with_quantity': top_products_with_quantity, 
                'top_rated_products': top_rated_products,
-               'recommended_products': recommended_products} #'top_products' :top_products, 'top_product_quantity' : top_product_quantity}
+               'recommended_products': recommended_products,
+                'random_product': random_product,
+     }
     
     return render(request, 'store/store.html', context)
 

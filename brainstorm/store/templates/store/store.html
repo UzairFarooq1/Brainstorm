@@ -97,6 +97,36 @@
         opacity: 1;
         transform: translateY(0);
     }
+
+
+
+
+    .side-popup {
+        position: fixed;
+        top: 300px;
+        right: -300px; /* Initially hide the pop-up outside the viewport */
+        width: 300px;
+        height: 40%;
+        background-color: #fff;
+        box-shadow: -5px 0 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: right 0.5s ease; /* Add a smooth transition effect on the right property */
+    }
+    
+    /* Style for the button to trigger the pop-up */
+    #show-popup-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 999;
+    }
+    .btn-close-popup {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 1.5em;
+        color: #0c0c0c;
+    }
 </style>
 {% endblock %}
 
@@ -303,6 +333,23 @@
 
       </div>
 
+    <!-- Add this content inside the offer pop-up -->
+    <div id="ad-popup" class="side-popup">
+        <button class="btn btn-link btn-close-popup" aria-label="Close">&times;</button>
+        <!-- Content of the pop-up goes here -->
+        <h4>Special Offer!</h4>
+        <p>Check out our exclusive offer on:</p>
+        <a href="{{ random_product.get_absolute_url }}">
+            <img src="{{ random_product.image.url }}" alt="{{ random_product.title }}">
+            <p class="product-title">{{ random_product.title }}</p>
+            <p class="product-price">$ {{ random_product.price|intcomma }}</p>
+        </a>
+        <button class="btn btn-primary">Shop Now</button>
+    </div>
+
+    <!-- Add a button or element to trigger the pop-up -->
+    <!-- <button id="show-popup-btn" class="btn btn-info">Show Offer</button>
+     -->
       <script>
         $(document).ready(function () {
             $('.slide-up').each(function () {
@@ -317,6 +364,20 @@
                     },
                     offset: '80%' // Adjust this offset as needed to control when the animation triggers
                 });
+            });
+        });
+
+        $(document).ready(function () {
+            // Your existing Waypoint code...
+        
+            // Delay showing the pop-up after 3 seconds
+            setTimeout(function () {
+                $('#ad-popup').css('right', '0');
+            }, 3000);
+        
+            // Hide the pop-up when the close button is clicked
+            $('#ad-popup .btn-close-popup').click(function () {
+                $('#ad-popup').css('right', '-300px');
             });
         });
     </script>
