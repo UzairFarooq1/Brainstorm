@@ -7,6 +7,7 @@ from django.db.models.functions import TruncDay
 from django.db.models.functions import TruncMonth
 from payment.models import Order, OrderItem
 from store.models import Product, Review , Category
+from cart.models import Rule
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.db.models import Avg, Max
@@ -27,6 +28,7 @@ def admin_dashboard(request):
    daily_sales = Order.objects.annotate(day=TruncDay('date_ordered')).values('day').annotate(total_sales=Sum('amount_paid')).order_by('day')
    labels = [order['day'].strftime('%Y-%m-%d') for order in daily_sales]
    data = [float(order['total_sales']) for order in daily_sales]
+
 
    #delivery status       
    status_distribution = OrderItem.objects.values('status').annotate(order_count=Count('status'))
@@ -89,7 +91,8 @@ def admin_dashboard(request):
     total_orders = Order.objects.count()
     average_reviews = Review.objects.aggregate(avg_reviews=Avg('rating'))['avg_reviews']
     total_users = User.objects.count()
-        
+
+    rule_data = Rule.objects.values('lhs', 'rhs', 'confidence')
 
    
    context = {
@@ -113,6 +116,7 @@ def admin_dashboard(request):
         'total_orders': total_orders,
         'average_reviews': average_reviews,
         'total_users': total_users,
+        'rule_data': rule_data,
 
     }
    
