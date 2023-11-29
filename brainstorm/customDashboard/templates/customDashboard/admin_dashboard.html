@@ -13,21 +13,6 @@
         <!-- CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://d3js.org/d3.v5.min.js"></script>
-        <script src="https://d3js.org/d3-array.v2.min.js"></script>
-        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-        <script src="https://d3js.org/d3-path.v1.min.js"></script>
-        <script src="https://d3js.org/d3-shape.v1.min.js"></script>
-        <script src="https://d3js.org/d3-color.v1.min.js"></script>
-        <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
-        <script src="https://d3js.org/d3-scale.v3.min.js"></script>
-        <script src="https://d3js.org/d3-selection.v1.min.js"></script>
-        <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
-        <script src="https://d3js.org/d3-timer.v1.min.js"></script>
-        <script src="https://d3js.org/d3-transition.v1.min.js"></script>
-        <script src="https://d3js.org/d3-force.v1.min.js"></script>
-        <script src="https://d3js.org/d3-sankey.v1.min.js"></script>
-        <script src="https://d3js.org/d3-chord.v1.min.js"></script>
 
 
 
@@ -511,71 +496,6 @@
     }
 </script>
 
-
-<!-- Resources -->
-<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
-
-<div class="chart-box">
-    <div class="chart-container rule-chart">
-        <div id="ruleChart" class="chart" style="width: 100%; height: 400px;"></div>
-    </div>
-    <br>
-    <button id="downloadRuleChart" class="download-button" onclick="downloadChart('ruleChart', 'rule_chart.png')">Download Chart</button>
-</div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Sample data
-        var ruleData = [
-            { lhs: "A", rhs: "B", confidence: 0.8 },
-            { lhs: "B", rhs: "C", confidence: 0.6 },
-            // Add more data as needed
-        ];
-
-        // Create an array of nodes
-        var nodes = Array.from(new Set([].concat(...ruleData.map(item => [item.lhs, item.rhs]))));
-
-        // Create an array of links
-        var links = ruleData.map(function(item) {
-            return { from: item.lhs, to: item.rhs, value: item.confidence };
-        });
-
-        // Themes begin
-        am4core.useTheme(am4themes_animated);
-        // Themes end
-
-        var chart = am4core.create("ruleChart", am4charts.ChordDiagram);
-        chart.data = {
-            names: nodes,
-            links: links
-        };
-
-        var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
-        categoryAxis.dataFields.category = "names";
-        categoryAxis.renderer.grid.template.disabled = true;
-        categoryAxis.renderer.labels.template.fontSize = 10;
-
-        var chord = chart.series.push(new am4charts.ChordSeries());
-        chord.dataFields.fromName = "from";
-        chord.dataFields.toName = "to";
-        chord.dataFields.value = "value";
-        chord.dataFields.color = "color";
-
-        // Add labels
-        var labelBullet = chord.bullets.push(new am4charts.LabelBullet());
-        labelBullet.label.text = "{value}";
-        labelBullet.location = 0.5;
-        
-        // Add tooltips
-        chord.tooltip.label.text = "{value}";
-        chord.tooltip.label.fontSize = 14;
-
-        chart.legend = new am4charts.Legend();
-        chart.legend.fontSize = 10;
-    });
-</script>
 
 
 

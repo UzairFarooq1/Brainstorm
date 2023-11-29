@@ -92,7 +92,6 @@ def admin_dashboard(request):
     average_reviews = Review.objects.aggregate(avg_reviews=Avg('rating'))['avg_reviews']
     total_users = User.objects.count()
 
-    rule_data = Rule.objects.values('lhs', 'rhs', 'confidence')
 
    
    context = {
@@ -116,7 +115,6 @@ def admin_dashboard(request):
         'total_orders': total_orders,
         'average_reviews': average_reviews,
         'total_users': total_users,
-        'rule_data': rule_data,
 
     }
    
