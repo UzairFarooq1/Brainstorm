@@ -113,7 +113,7 @@ def complete_order(request):
             send_mail('Order Placed', 'Hi!' + '\n\n' + 'Thank you for placing your order on Brainstorm Solutions Ecommerce' + '\n\n' +
                       'Please find your order below' + '\n\n' + str(all_products) + 'Quantity: ' + str(quantity_ordered) +'\n\n' + 'Total Paid: $' +
                       str(cart.get_total()), settings.EMAIL_HOST_USER, [email], fail_silently=False)
-            send_mail('Order Received', 'Hi!' + '\n\n' + 'An order has bee received from :'+ name + '\n\n' +
+            send_mail('Order Received', 'Hi!' + '\n\n' + 'An order has been received from : '+ name + '\n\n' +
                       'Find order your order below' + '\n\n' + str(all_products) + 'Quantity: ' + str(quantity_ordered) +'\n\n' + 'Total Paid: $' +
                       str(cart.get_total()), settings.EMAIL_HOST_USER, [adminEmail], fail_silently=False)            
             # Clear shopping cart after successful checkout        
@@ -155,7 +155,7 @@ def complete_order(request):
             send_mail('Order Placed', 'Hi!' + '\n\n' + 'Thank you for placing your order on Brainstorm Solutions Ecommerce' + '\n\n' +
                       'Please find your order below' + '\n\n' + str(all_products) + '&nbsp'+'Quantity: ' + str(quantity_ordered) +'\n\n' + 'Total Paid: Ksh' +
                       str(cart.get_total()), settings.EMAIL_HOST_USER, [email], fail_silently=False)
-            send_mail('Order Received', 'Hi!' + '\n\n' + 'An order has been received from :'+ name + '\n\n' +
+            send_mail('Order Received', 'Hi!' + '\n\n' + 'An order has been received from : '+ name + '\n\n' +
                       'Find order your order below' + '\n\n' + str(all_products) + 'Quantity: ' + str(quantity_ordered) +'\n\n' + 'Total Paid: $' +
                       str(cart.get_total()), settings.EMAIL_HOST_USER, [adminEmail], fail_silently=False)   
 
